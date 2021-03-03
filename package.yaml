@@ -1,0 +1,48 @@
+name:                assignment-one
+version:             0.1.0.0
+github:              "https://git.gvk.idi.ntnu.no/course/prog2006/as/sindre0830/assignment-one"
+license:             BSD3
+author:              "Sindre Eiklid"
+maintainer:          "sindreik@stud.ntnu.no"
+copyright:           "2021 Sindre Eiklid"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://git.gvk.idi.ntnu.no/course/prog2006/as/sindre0830/assignment-one#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+
+library:
+  source-dirs: src
+
+executables:
+  assignment-one-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - assignment-one
+
+tests:
+  assignment-one-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - assignment-one
