@@ -9,6 +9,7 @@ data Move = X | O
 data Cell = Occupied Move | Empty
 
 type BoardSize = Int
+type Position = Int
 
 boardSize :: BoardSize
 boardSize = 3
@@ -21,6 +22,12 @@ instance Show Cell where
 	show (Occupied X)     = "X"
 	show (Occupied O)     = "O"
 	show Empty            = " "
+
+instance Eq Cell where
+	(Occupied X) == (Occupied X) 	= True 
+	(Occupied O) == (Occupied O) 	= True 
+	Empty == Empty 					= True
+	_ == _ 							= False
 
 renderRow :: [Cell] -> String
 renderRow row = intercalate " | " $ fmap show row
@@ -41,6 +48,14 @@ renderBoard board = do
 newBoard :: [Cell]
 newBoard = [Empty | i <- [1..(boardSize * boardSize)]]
 
+verifyMove :: Position -> [Cell] -> Bool
+verifyMove pos board
+	| pos < 1 						= False
+	| pos > (boardSize * boardSize) = False
+	| otherwise 					= board!!(pos - 1) == Empty
+
 someFunc :: IO ()
 someFunc = do
-	renderBoard newBoard
+	let board = newBoard
+	renderBoard board
+	print (verifyMove 1 board)
