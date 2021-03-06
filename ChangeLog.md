@@ -8,4 +8,6 @@
 
 [0.1.0.3] development: Added function to validate move
 
+[0.1.0.4] development: Added simple game loop and a function to update board
+
 ## Unreleased changes
