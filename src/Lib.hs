@@ -65,22 +65,37 @@ updateBoard xs i e = case splitAt (i - 1) xs of
    (before, _:after) -> before ++ e: after
    _ -> xs
 
+checkRow :: Move -> [Cell] -> Bool 
+checkRow player board
+	| null board = False
+	| all (== Occupied player) (take boardSize board) = True 
+	| otherwise = checkRow player (drop boardSize board)
+
+verifyBoard :: Move -> [Cell] -> Bool
+verifyBoard player board
+	| checkRow player board = False
+	| otherwise = True 
+
 gameLoop :: Move -> [Cell] -> IO ()
-gameLoop turn board = do
+gameLoop player board = do
 	renderBoard board
-	putStrLn (show turn ++ " turn: ")
+	putStrLn (show player ++ " turn: ")
 	inpStr <- getLine 
 	let pos = read inpStr :: Int
 	if verifyMove pos board
 		then do
-			putStrLn "Valid move!"
-			let newBoard = updateBoard board pos (Occupied turn)
-			if turn == X
-				then gameLoop O newBoard
-				else gameLoop X newBoard
+			let newBoard = updateBoard board pos (Occupied player)
+			if verifyBoard player newBoard
+				then do
+					if player == X
+						then gameLoop O newBoard
+						else gameLoop X newBoard
+				else do
+					renderBoard newBoard
+					putStrLn (show player ++ " won!")
 		else do
 			putStrLn "Invalid move, try again..."
-			gameLoop turn board
+			gameLoop player board
 
 someFunc :: IO ()
 someFunc = do

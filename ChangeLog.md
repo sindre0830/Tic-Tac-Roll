@@ -10,4 +10,6 @@
 
 [0.1.0.4] development: Added simple game loop and a function to update board
 
+[0.1.0.5] development: Added win condition if a row match
+
 ## Unreleased changes
