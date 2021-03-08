@@ -65,15 +65,15 @@ updateBoard xs i e = case splitAt (i - 1) xs of
    (before, _:after) -> before ++ e: after
    _ -> xs
 
-checkRow :: Move -> [Cell] -> Bool 
-checkRow player board
-	| null board = False
-	| all (== Occupied player) (take boardSize board) = True 
-	| otherwise = checkRow player (drop boardSize board)
+checkRow :: Move -> Position -> [Cell] -> Bool 
+checkRow player pos board = do
+	let index = (pos `div` boardSize) * boardSize
+	let row = drop index (take (index + boardSize) board)
+	all (== Occupied player) row
 
-verifyBoard :: Move -> [Cell] -> Bool
-verifyBoard player board
-	| checkRow player board = False
+verifyBoard :: Move -> Position -> [Cell] -> Bool
+verifyBoard player pos board
+	| checkRow player (pos - 1) board = False
 	| otherwise = True 
 
 gameLoop :: Move -> [Cell] -> IO ()
@@ -85,7 +85,7 @@ gameLoop player board = do
 	if verifyMove pos board
 		then do
 			let newBoard = updateBoard board pos (Occupied player)
-			if verifyBoard player newBoard
+			if verifyBoard player pos newBoard
 				then do
 					if player == X
 						then gameLoop O newBoard
