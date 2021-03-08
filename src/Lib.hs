@@ -77,6 +77,24 @@ checkColumn player pos board = do
 	let column = board!!index : takeNth boardSize (drop (index + 1) board)
 	all (== Occupied player) column
 
+checkDiagonalL :: Move -> Position -> [Cell] -> Bool
+checkDiagonalL player pos board = do
+	if pos `mod` (boardSize + 1) == 0
+		then do
+			let index = 0
+			let diag = board!!index : takeNth (boardSize + 1) (drop (index + 1) board)
+			all (== Occupied player) diag
+		else False
+
+checkDiagonalR :: Move -> Position -> [Cell] -> Bool
+checkDiagonalR player pos board = do
+	if pos `mod` (boardSize - 1) == 0 && pos > 0 && pos < (boardSize * boardSize) - 1
+		then do
+			let index = (boardSize - 1)
+			let diag = take boardSize (board!!index : takeNth (boardSize - 1) (drop (index + 1) board))
+			all (== Occupied player) diag
+		else False
+
 -- https://stackoverflow.com/a/2028218
 takeNth :: Int -> [a] -> [a]
 takeNth n xs = case drop (n-1) xs of
@@ -87,6 +105,8 @@ verifyBoard :: Move -> Position -> [Cell] -> Bool
 verifyBoard player pos board
 	| checkRow player (pos - 1) board = False
 	| checkColumn player (pos - 1) board = False
+	| checkDiagonalL player (pos - 1) board = False
+	| checkDiagonalR player (pos - 1) board = False
 	| otherwise = True 
 
 gameLoop :: Move -> [Cell] -> IO ()

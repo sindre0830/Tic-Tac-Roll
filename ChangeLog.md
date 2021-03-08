@@ -16,4 +16,6 @@
 
 [0.1.0.7] development: Added win condition if a column match
 
+[0.1.0.8] development: Added win condition if a diagonal match
+
 ## Unreleased changes
