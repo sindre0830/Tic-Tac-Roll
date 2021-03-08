@@ -14,4 +14,6 @@
 
 [0.1.0.6] development: Changed row validation to only check relevant row
 
+[0.1.0.7] development: Added win condition if a column match
+
 ## Unreleased changes

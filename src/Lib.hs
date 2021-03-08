@@ -71,9 +71,22 @@ checkRow player pos board = do
 	let row = drop index (take (index + boardSize) board)
 	all (== Occupied player) row
 
+checkColumn :: Move -> Position -> [Cell] -> Bool
+checkColumn player pos board = do
+	let index = pos `mod` boardSize
+	let column = board!!index : takeNth boardSize (drop (index + 1) board)
+	all (== Occupied player) column
+
+-- https://stackoverflow.com/a/2028218
+takeNth :: Int -> [a] -> [a]
+takeNth n xs = case drop (n-1) xs of
+	y : ys -> y : takeNth n ys
+	[] -> []
+
 verifyBoard :: Move -> Position -> [Cell] -> Bool
 verifyBoard player pos board
 	| checkRow player (pos - 1) board = False
+	| checkColumn player (pos - 1) board = False
 	| otherwise = True 
 
 gameLoop :: Move -> [Cell] -> IO ()
