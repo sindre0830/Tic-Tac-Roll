@@ -2,8 +2,7 @@ module Lib
 	( someFunc
 	) where
 
-import System.Environment
-import Data.List
+import Data.List ( intercalate )
 
 data Move = X | O
 data Cell = Occupied Move | Empty
@@ -90,14 +89,14 @@ checkDiagonalR :: Move -> Position -> [Cell] -> Bool
 checkDiagonalR player pos board = do
 	if pos `mod` (boardSize - 1) == 0 && pos > 0 && pos < (boardSize * boardSize) - 1
 		then do
-			let index = (boardSize - 1)
+			let index = boardSize - 1
 			let diag = take boardSize (board!!index : takeNth (boardSize - 1) (drop (index + 1) board))
 			all (== Occupied player) diag
 		else False
 
 -- https://stackoverflow.com/a/2028218
 takeNth :: Int -> [a] -> [a]
-takeNth n xs = case drop (n-1) xs of
+takeNth n xs = case drop (n - 1) xs of
 	y : ys -> y : takeNth n ys
 	[] -> []
 
@@ -116,7 +115,7 @@ gameLoop :: Move -> [Cell] -> IO ()
 gameLoop player board = do
 	renderBoard board
 	putStrLn (show player ++ " turn: ")
-	inpStr <- getLine 
+	inpStr <- getLine
 	let pos = read inpStr :: Int
 	if verifyMove pos board
 		then do
@@ -130,7 +129,7 @@ gameLoop player board = do
 								else gameLoop X newBoard
 						else do
 							renderBoard newBoard
-							putStrLn ("It's a tie!")
+							putStrLn "It's a tie!"
 				else do
 					renderBoard newBoard
 					putStrLn (show player ++ " won!")

@@ -20,4 +20,6 @@
 
 [0.1.0.9] development: Added tie condition if no win condition is met and board is full
 
+[0.1.0.10] formatting: Reformatted some code to keep consistency
+
 ## Unreleased changes
