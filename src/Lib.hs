@@ -111,28 +111,62 @@ verifyBoard player pos board
 verifyState :: [Cell] -> Bool
 verifyState board = elem Empty board
 
+rotateL :: [[Cell]] -> [[Cell]]
+rotateL [] = []
+rotateL ([]:_) = []
+rotateL m = map last m : (rotateL (map init m))
+
+listToMatrix :: [Cell] -> [[Cell]]
+listToMatrix [] = []
+listToMatrix arr = (take boardSize arr) : (listToMatrix (drop boardSize arr))
+
+rotateBoard :: [Cell] -> String -> [Cell]
+rotateBoard board dir = do
+	if dir == "left"
+		then concat $ rotateL (listToMatrix board)
+		else concat $ rotateL $ rotateL $ rotateL (listToMatrix board)
+
 gameLoop :: Move -> [Cell] -> IO ()
 gameLoop player board = do
 	renderBoard board
 	putStrLn (show player ++ " turn: ")
 	inpStr <- getLine
-	let pos = read inpStr :: Int
+	let arrInp = words inpStr
+	let pos = read (head arrInp) :: Int
 	if verifyMove pos board
 		then do
 			let newBoard = updateBoard board pos (Occupied player)
-			if verifyBoard player pos newBoard
+			if length arrInp > 1 && ((arrInp!!1) == "left" || (arrInp!!1) == "right")
 				then do
-					if verifyState newBoard
+					let dir = arrInp!!1
+					let rotBoard = rotateBoard newBoard dir
+					if verifyBoard player pos rotBoard
 						then do
-							if player == X
-								then gameLoop O newBoard
-								else gameLoop X newBoard
+							if verifyState rotBoard
+								then do
+									if player == X
+										then gameLoop O rotBoard
+										else gameLoop X rotBoard
+								else do
+									renderBoard rotBoard
+									putStrLn "It's a tie!"
+						else do
+							renderBoard rotBoard
+							putStrLn (show player ++ " won!")
+				else do
+					if verifyBoard player pos newBoard
+						then do
+							if verifyState newBoard
+								then do
+									if player == X
+										then gameLoop O newBoard
+										else gameLoop X newBoard
+								else do
+									renderBoard newBoard
+									putStrLn "It's a tie!"
 						else do
 							renderBoard newBoard
-							putStrLn "It's a tie!"
-				else do
-					renderBoard newBoard
-					putStrLn (show player ++ " won!")
+							putStrLn (show player ++ " won!")
 		else do
 			putStrLn "Invalid move, try again..."
 			gameLoop player board

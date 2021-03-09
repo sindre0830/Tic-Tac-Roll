@@ -22,4 +22,6 @@
 
 [0.1.0.10] formatting: Reformatted some code to keep consistency
 
+[0.1.0.11] development: Added rotate function
+
 ## Unreleased changes
