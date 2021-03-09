@@ -18,4 +18,6 @@
 
 [0.1.0.8] development: Added win condition if a diagonal match
 
+[0.1.0.9] development: Added tie condition if no win condition is met and board is full
+
 ## Unreleased changes

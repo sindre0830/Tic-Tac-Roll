@@ -109,6 +109,9 @@ verifyBoard player pos board
 	| checkDiagonalR player (pos - 1) board = False
 	| otherwise = True 
 
+verifyState :: [Cell] -> Bool
+verifyState board = elem Empty board
+
 gameLoop :: Move -> [Cell] -> IO ()
 gameLoop player board = do
 	renderBoard board
@@ -120,9 +123,14 @@ gameLoop player board = do
 			let newBoard = updateBoard board pos (Occupied player)
 			if verifyBoard player pos newBoard
 				then do
-					if player == X
-						then gameLoop O newBoard
-						else gameLoop X newBoard
+					if verifyState newBoard
+						then do
+							if player == X
+								then gameLoop O newBoard
+								else gameLoop X newBoard
+						else do
+							renderBoard newBoard
+							putStrLn ("It's a tie!")
 				else do
 					renderBoard newBoard
 					putStrLn (show player ++ " won!")
