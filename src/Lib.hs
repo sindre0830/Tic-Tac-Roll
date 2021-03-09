@@ -64,35 +64,31 @@ updateBoard xs i e = case splitAt (i - 1) xs of
    (before, _:after) -> before ++ e: after
    _ -> xs
 
-checkRow :: Move -> Position -> [Cell] -> Bool 
-checkRow player pos board = do
-	let index = (pos `div` boardSize) * boardSize
-	let row = drop index (take (index + boardSize) board)
-	all (== Occupied player) row
+checkRow :: [Cell] -> (Bool, Move) 
+checkRow board
+	| null board = (False, X)
+	| all (== Occupied X) (take boardSize board) = (True, X) 
+	| all (== Occupied O) (take boardSize board) = (True, O)
+	| otherwise = checkRow (drop boardSize board)
 
-checkColumn :: Move -> Position -> [Cell] -> Bool
-checkColumn player pos board = do
-	let index = pos `mod` boardSize
-	let column = board!!index : takeNth boardSize (drop (index + 1) board)
-	all (== Occupied player) column
+checkColumn :: [Cell] -> BoardSize -> (Bool, Move)
+checkColumn board size
+	| null board = (False, X)
+	| all (== Occupied X) (head board : takeNth size (tail board)) = (True, X)
+	| all (== Occupied O) (head board : takeNth size (tail board)) = (True, O)
+	| otherwise = checkColumn (dropNth size (tail board)) (size - 1)
 
-checkDiagonalL :: Move -> Position -> [Cell] -> Bool
-checkDiagonalL player pos board = do
-	if pos `mod` (boardSize + 1) == 0
-		then do
-			let index = 0
-			let diag = board!!index : takeNth (boardSize + 1) (drop (index + 1) board)
-			all (== Occupied player) diag
-		else False
+checkDiagonalL :: [Cell] -> (Bool, Move)
+checkDiagonalL board
+	| all (== Occupied X) (head board : takeNth (boardSize + 1) (tail board)) = (True, X)
+	| all (== Occupied O) (head board : takeNth (boardSize + 1) (tail board)) = (True, O)
+	| otherwise = (False, X)
 
-checkDiagonalR :: Move -> Position -> [Cell] -> Bool
-checkDiagonalR player pos board = do
-	if pos `mod` (boardSize - 1) == 0 && pos > 0 && pos < (boardSize * boardSize) - 1
-		then do
-			let index = boardSize - 1
-			let diag = take boardSize (board!!index : takeNth (boardSize - 1) (drop (index + 1) board))
-			all (== Occupied player) diag
-		else False
+checkDiagonalR :: [Cell] -> (Bool, Move)
+checkDiagonalR board
+	| all (== Occupied X) (take boardSize (board!!(boardSize - 1) : takeNth (boardSize - 1) (drop boardSize board))) = (True, X)
+	| all (== Occupied O) (take boardSize (board!!(boardSize - 1) : takeNth (boardSize - 1) (drop boardSize board))) = (True, O)
+	| otherwise = (False, X)
 
 -- https://stackoverflow.com/a/2028218
 takeNth :: Int -> [a] -> [a]
@@ -100,13 +96,18 @@ takeNth n xs = case drop (n - 1) xs of
 	y : ys -> y : takeNth n ys
 	[] -> []
 
-verifyBoard :: Move -> Position -> [Cell] -> Bool
-verifyBoard player pos board
-	| checkRow player (pos - 1) board = False
-	| checkColumn player (pos - 1) board = False
-	| checkDiagonalL player (pos - 1) board = False
-	| checkDiagonalR player (pos - 1) board = False
-	| otherwise = True 
+-- https://stackoverflow.com/a/5290128
+dropNth :: Int -> [a] -> [a]
+dropNth _ [] = []
+dropNth n xs = take (n - 1) xs ++ dropNth n (drop n xs)
+
+verifyBoard :: [Cell] -> (Bool, Move)
+verifyBoard board
+	| fst (checkRow board) = (False, snd (checkRow board))
+	| fst (checkColumn board boardSize) = (False, snd (checkColumn board boardSize))
+	| fst (checkDiagonalL board) = (False, snd (checkDiagonalL board))
+	| fst (checkDiagonalR board) = (False, snd (checkDiagonalR board))
+	| otherwise = (True, X) 
 
 verifyState :: [Cell] -> Bool
 verifyState board = elem Empty board
@@ -140,7 +141,8 @@ gameLoop player board = do
 				then do
 					let dir = arrInp!!1
 					let rotBoard = rotateBoard newBoard dir
-					if verifyBoard player pos rotBoard
+					let winner = verifyBoard rotBoard
+					if fst winner
 						then do
 							if verifyState rotBoard
 								then do
@@ -152,9 +154,10 @@ gameLoop player board = do
 									putStrLn "It's a tie!"
 						else do
 							renderBoard rotBoard
-							putStrLn (show player ++ " won!")
+							putStrLn (show (snd winner) ++ " won!")
 				else do
-					if verifyBoard player pos newBoard
+					let winner = verifyBoard newBoard
+					if fst winner
 						then do
 							if verifyState newBoard
 								then do
@@ -166,7 +169,7 @@ gameLoop player board = do
 									putStrLn "It's a tie!"
 						else do
 							renderBoard newBoard
-							putStrLn (show player ++ " won!")
+							putStrLn (show (snd winner) ++ " won!")
 		else do
 			putStrLn "Invalid move, try again..."
 			gameLoop player board

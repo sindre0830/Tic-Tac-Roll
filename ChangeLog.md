@@ -24,4 +24,6 @@
 
 [0.1.0.11] development: Added rotate function
 
+[0.1.0.12] development: Changed board validation to validate the entire board
+
 ## Unreleased changes
