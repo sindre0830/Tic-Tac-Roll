@@ -124,8 +124,15 @@ listToMatrix arr = (take boardSize arr) : (listToMatrix (drop boardSize arr))
 rotateBoard :: [Cell] -> String -> [Cell]
 rotateBoard board dir = do
 	if dir == "left"
-		then concat $ rotateL (listToMatrix board)
-		else concat $ rotateL $ rotateL $ rotateL (listToMatrix board)
+		then concat $ rotateL $ listToMatrix $ swapPieces board
+		else concat $ rotateL $ rotateL $ rotateL $ listToMatrix $ swapPieces board
+
+swapPieces :: [Cell] -> [Cell]
+swapPieces [] = []
+swapPieces [x] = [x]
+swapPieces (x:xs) = do
+	let top = take (boardSize-1) xs
+	((last top : init top) ++ [x]) ++ (drop (boardSize-1) xs)
 
 gameLoop :: Move -> [Cell] -> IO ()
 gameLoop player board = do

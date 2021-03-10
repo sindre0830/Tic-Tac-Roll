@@ -26,4 +26,6 @@
 
 [0.1.0.12] development: Changed board validation to validate the entire board
 
+[0.1.0.13] development: Added swapping function
+
 ## Unreleased changes
