@@ -28,4 +28,6 @@
 
 [0.1.0.13] development: Added swapping function
 
+[0.1.0.14] formatting: Added GoLint suggestions
+
 ## Unreleased changes

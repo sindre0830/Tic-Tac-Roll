@@ -110,16 +110,16 @@ verifyBoard board
 	| otherwise = (True, X) 
 
 verifyState :: [Cell] -> Bool
-verifyState board = elem Empty board
+verifyState board = Empty `elem` board
 
 rotateL :: [[Cell]] -> [[Cell]]
 rotateL [] = []
 rotateL ([]:_) = []
-rotateL m = map last m : (rotateL (map init m))
+rotateL m = map last m : rotateL (map init m)
 
 listToMatrix :: [Cell] -> [[Cell]]
 listToMatrix [] = []
-listToMatrix arr = (take boardSize arr) : (listToMatrix (drop boardSize arr))
+listToMatrix arr = take boardSize arr : listToMatrix (drop boardSize arr)
 
 rotateBoard :: [Cell] -> String -> [Cell]
 rotateBoard board dir = do
@@ -132,7 +132,7 @@ swapPieces [] = []
 swapPieces [x] = [x]
 swapPieces (x:xs) = do
 	let top = take (boardSize-1) xs
-	((last top : init top) ++ [x]) ++ (drop (boardSize-1) xs)
+	((last top : init top) ++ [x]) ++ drop (boardSize-1) xs
 
 gameLoop :: Move -> [Cell] -> IO ()
 gameLoop player board = do
