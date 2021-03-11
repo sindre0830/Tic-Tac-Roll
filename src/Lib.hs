@@ -3,6 +3,7 @@ module Lib
 	) where
 
 import Data.List ( intercalate )
+import Data.Char ( toLower )
 
 data Move = X | O
 data Cell = Occupied Move | Empty
@@ -32,6 +33,10 @@ instance Eq Cell where
 	(Occupied O) == (Occupied O) 	= True 
 	Empty == Empty 					= True
 	_ == _ 							= False
+
+nextMove :: Move -> Move
+nextMove X = O
+nextMove O = X
 
 renderRow :: [Cell] -> String
 renderRow row = intercalate " | " $ fmap show row
@@ -101,16 +106,17 @@ dropNth :: Int -> [a] -> [a]
 dropNth _ [] = []
 dropNth n xs = take (n - 1) xs ++ dropNth n (drop n xs)
 
-verifyBoard :: [Cell] -> (Bool, Move)
+verifyBoard :: [Cell] -> (Bool, String)
 verifyBoard board
-	| fst (checkRow board) = (False, snd (checkRow board))
-	| fst (checkColumn board boardSize) = (False, snd (checkColumn board boardSize))
-	| fst (checkDiagonalL board) = (False, snd (checkDiagonalL board))
-	| fst (checkDiagonalR board) = (False, snd (checkDiagonalR board))
-	| otherwise = (True, X) 
+	| fst (checkRow board) = (True, show (snd (checkRow board)) ++ " won!")
+	| fst (checkColumn board boardSize) = (True, show (snd (checkColumn board boardSize)) ++ " won!")
+	| fst (checkDiagonalL board) = (True, show (snd (checkDiagonalL board)) ++ " won!")
+	| fst (checkDiagonalR board) = (True, show (snd (checkDiagonalR board)) ++ " won!")
+	| verifyState board = (True, "It's a tie!")
+	| otherwise = (False, "") 
 
 verifyState :: [Cell] -> Bool
-verifyState board = Empty `elem` board
+verifyState = notElem Empty
 
 rotateL :: [[Cell]] -> [[Cell]]
 rotateL [] = []
@@ -134,54 +140,47 @@ swapPieces (x:xs) = do
 	let top = take (boardSize-1) xs
 	((last top : init top) ++ [x]) ++ drop (boardSize-1) xs
 
-gameLoop :: Move -> [Cell] -> IO ()
-gameLoop player board = do
+stringToLower :: String -> String 
+stringToLower [] = []
+stringToLower xs = map toLower xs
+
+filterGameInput :: String -> (Int, String)
+filterGameInput inpStr = do
+	let arrInp = words $ stringToLower inpStr
+	let pos = read (head arrInp) :: Int
+	if length arrInp > 1 && ((arrInp!!1) == "left" || (arrInp!!1) == "right")
+		then (pos, arrInp!!1)
+		else (pos, "")
+
+getNewBoard :: [Cell] -> Int -> Cell -> String -> [Cell]
+getNewBoard board pos player dir = do
+	if dir /= ""
+		then do
+			let tmpBoard = updateBoard board pos player
+			rotateBoard tmpBoard dir
+		else do
+			updateBoard board pos player
+
+gameLoopPvP :: Move -> [Cell] -> IO ()
+gameLoopPvP player board = do
 	renderBoard board
 	putStrLn (show player ++ " turn: ")
 	inpStr <- getLine
-	let arrInp = words inpStr
-	let pos = read (head arrInp) :: Int
+	let (pos, dir) = filterGameInput inpStr
 	if verifyMove pos board
 		then do
-			let newBoard = updateBoard board pos (Occupied player)
-			if length arrInp > 1 && ((arrInp!!1) == "left" || (arrInp!!1) == "right")
+			let newBoard = getNewBoard board pos (Occupied player) dir
+			let (gameover, msg) = verifyBoard newBoard
+			if gameover
 				then do
-					let dir = arrInp!!1
-					let rotBoard = rotateBoard newBoard dir
-					let winner = verifyBoard rotBoard
-					if fst winner
-						then do
-							if verifyState rotBoard
-								then do
-									if player == X
-										then gameLoop O rotBoard
-										else gameLoop X rotBoard
-								else do
-									renderBoard rotBoard
-									putStrLn "It's a tie!"
-						else do
-							renderBoard rotBoard
-							putStrLn (show (snd winner) ++ " won!")
-				else do
-					let winner = verifyBoard newBoard
-					if fst winner
-						then do
-							if verifyState newBoard
-								then do
-									if player == X
-										then gameLoop O newBoard
-										else gameLoop X newBoard
-								else do
-									renderBoard newBoard
-									putStrLn "It's a tie!"
-						else do
-							renderBoard newBoard
-							putStrLn (show (snd winner) ++ " won!")
+					renderBoard newBoard
+					putStrLn msg
+				else gameLoopPvP (nextMove player) newBoard
 		else do
 			putStrLn "Invalid move, try again..."
-			gameLoop player board
+			gameLoopPvP player board
 
 someFunc :: IO ()
 someFunc = do
 	let board = newBoard
-	gameLoop X board
+	gameLoopPvP X board

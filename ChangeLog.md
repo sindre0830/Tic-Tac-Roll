@@ -30,4 +30,6 @@
 
 [0.1.0.14] formatting: Added GoLint suggestions
 
+[0.1.0.15] formatting: Simplified PvP gameloop
+
 ## Unreleased changes
