@@ -20,17 +20,17 @@ instance Show Move where
 	show O = "O"
 
 instance Eq Move where
-	X == X 			= True 
-	O == O 			= True
-	_ == _ 			= False
+	X == X = True 
+	O == O = True
+	_ == _ = False
 
 instance Show Cell where
-	show (Occupied X)     = "X"
-	show (Occupied O)     = "O"
-	show Empty            = " "
+	show (Occupied X)	= "X"
+	show (Occupied O)   = "O"
+	show Empty          = " "
 
 instance Eq Cell where
-	(Occupied X) == (Occupied X) 	= True 
+	(Occupied X) == (Occupied X)	= True 
 	(Occupied O) == (Occupied O) 	= True 
 	Empty == Empty 					= True
 	_ == _ 							= False
@@ -72,29 +72,29 @@ updateBoard xs i e = case splitAt (i - 1) xs of
 
 checkRow :: [Cell] -> (Bool, Move) 
 checkRow board
-	| null board = (False, X)
-	| all (== Occupied X) (take boardSize board) = (True, X) 
-	| all (== Occupied O) (take boardSize board) = (True, O)
-	| otherwise = checkRow (drop boardSize board)
+	| null board 									= (False, X)
+	| all (== Occupied X) (take boardSize board) 	= (True, X) 
+	| all (== Occupied O) (take boardSize board) 	= (True, O)
+	| otherwise 									= checkRow (drop boardSize board)
 
 checkColumn :: [Cell] -> BoardSize -> (Bool, Move)
 checkColumn board size
-	| null board = (False, X)
-	| all (== Occupied X) (head board : takeNth size (tail board)) = (True, X)
-	| all (== Occupied O) (head board : takeNth size (tail board)) = (True, O)
-	| otherwise = checkColumn (dropNth size (tail board)) (size - 1)
+	| null board 													= (False, X)
+	| all (== Occupied X) (head board : takeNth size (tail board)) 	= (True, X)
+	| all (== Occupied O) (head board : takeNth size (tail board)) 	= (True, O)
+	| otherwise 													= checkColumn (dropNth size (tail board)) (size - 1)
 
 checkDiagonalL :: [Cell] -> (Bool, Move)
 checkDiagonalL board
-	| all (== Occupied X) (head board : takeNth (boardSize + 1) (tail board)) = (True, X)
-	| all (== Occupied O) (head board : takeNth (boardSize + 1) (tail board)) = (True, O)
-	| otherwise = (False, X)
+	| all (== Occupied X) (head board : takeNth (boardSize + 1) (tail board)) 	= (True, X)
+	| all (== Occupied O) (head board : takeNth (boardSize + 1) (tail board)) 	= (True, O)
+	| otherwise 																= (False, X)
 
 checkDiagonalR :: [Cell] -> (Bool, Move)
 checkDiagonalR board
-	| all (== Occupied X) (take boardSize (board!!(boardSize - 1) : takeNth (boardSize - 1) (drop boardSize board))) = (True, X)
-	| all (== Occupied O) (take boardSize (board!!(boardSize - 1) : takeNth (boardSize - 1) (drop boardSize board))) = (True, O)
-	| otherwise = (False, X)
+	| all (== Occupied X) (take boardSize (board!!(boardSize - 1) : takeNth (boardSize - 1) (drop boardSize board))) 	= (True, X)
+	| all (== Occupied O) (take boardSize (board!!(boardSize - 1) : takeNth (boardSize - 1) (drop boardSize board))) 	= (True, O)
+	| otherwise 																										= (False, X)
 
 -- https://stackoverflow.com/a/2028218
 takeNth :: Int -> [a] -> [a]
@@ -109,12 +109,12 @@ dropNth n xs = take (n - 1) xs ++ dropNth n (drop n xs)
 
 verifyBoard :: [Cell] -> (Bool, String)
 verifyBoard board
-	| fst (checkRow board) = (True, show (snd (checkRow board)) ++ " won!")
+	| fst (checkRow board) 				= (True, show (snd (checkRow board)) ++ " won!")
 	| fst (checkColumn board boardSize) = (True, show (snd (checkColumn board boardSize)) ++ " won!")
-	| fst (checkDiagonalL board) = (True, show (snd (checkDiagonalL board)) ++ " won!")
-	| fst (checkDiagonalR board) = (True, show (snd (checkDiagonalR board)) ++ " won!")
-	| verifyState board = (True, "It's a tie!")
-	| otherwise = (False, "") 
+	| fst (checkDiagonalL board) 		= (True, show (snd (checkDiagonalL board)) ++ " won!")
+	| fst (checkDiagonalR board) 		= (True, show (snd (checkDiagonalR board)) ++ " won!")
+	| verifyState board 				= (True, "It's a tie!")
+	| otherwise 						= (False, "") 
 
 verifyState :: [Cell] -> Bool
 verifyState = notElem Empty

@@ -36,4 +36,6 @@
 
 [1.13.1] formatting: Changed version format
 
+[1.13.2] formatting: Fixed indentation
+
 ## Unreleased changes
