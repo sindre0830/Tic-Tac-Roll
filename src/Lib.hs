@@ -115,13 +115,26 @@ dropNth _ [] = []
 dropNth n xs = take (n - 1) xs ++ dropNth n (drop n xs)
 
 verifyBoard :: Board -> (Gameover, Output)
-verifyBoard board
-	| fst (checkRow board) 			= (True, show (snd (checkRow board)) ++ " won!")
-	| fst (checkColumn board) 		= (True, show (snd (checkColumn board)) ++ " won!")
-	| fst (checkDiagonalL board) 	= (True, show (snd (checkDiagonalL board)) ++ " won!")
-	| fst (checkDiagonalR board) 	= (True, show (snd (checkDiagonalR board)) ++ " won!")
-	| Empty `notElem` board 		= (True, "It's a tie!")
-	| otherwise 					= (False, "")
+verifyBoard board = do
+	let (flag, mark) = checkRow board
+	if flag
+		then (True, show mark ++ " won!")
+		else do
+			let (flag, mark) = checkColumn board
+			if flag
+				then (True, show mark ++ " won!")
+				else do
+					let (flag, mark) = checkDiagonalL board
+					if flag
+						then (True, show mark ++ " won!")
+						else do
+							let (flag, mark) = checkDiagonalR board
+							if flag
+								then (True, show mark ++ " won!")
+								else do
+									if Empty `notElem` board
+										then (True, "It's a tie!")
+										else (False, "")
 
 rotateL :: Matrix -> Matrix
 rotateL matrix = transpose $ map reverse matrix

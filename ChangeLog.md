@@ -50,4 +50,6 @@
 
 [1.13.8] formatting: Simplified rotation and renamed variables
 
+[1.13.9] formatting: Switched from guards to nested if statements in verifyBoard
+
 ## Unreleased changes
