@@ -4,6 +4,7 @@ module Lib
 
 import Data.List ( intercalate )
 import Data.Char ( toLower )
+import System.Random( newStdGen, randomR, StdGen )
 
 data Move = X | O
 data Cell = Occupied Move | Empty
@@ -180,7 +181,58 @@ gameLoopPvP player board = do
 			putStrLn "Invalid move, try again..."
 			gameLoopPvP player board
 
+removeOccupied :: [(Cell, Int)] -> [(Cell, Int)]
+removeOccupied [] = []
+removeOccupied (x:xs) = do
+	if fst x == Empty
+		then x : removeOccupied xs
+		else removeOccupied xs
+
+getRndIndex :: StdGen -> Int -> Int 
+getRndIndex rndSeed size = do
+	let (rndIndex, _) = randomR (0, size - 1) rndSeed :: (Int, StdGen)
+	rndIndex
+
+entityAI :: StdGen -> [Cell] -> ([Cell], String)
+entityAI rndSeed board = do
+	let boardIndex = zip board [1..(length board)]
+	let arrIndex = map snd (removeOccupied boardIndex)
+	let pos = arrIndex !! getRndIndex rndSeed (length arrIndex)
+	let arrDir = ["left", "right", ""]
+	let dir = arrDir !! getRndIndex rndSeed (length arrDir)
+	let newBoard = getNewBoard board pos (Occupied O) dir
+	(newBoard, show pos ++ " " ++ dir)
+
+gameLoopPvE :: Move -> [Cell] -> IO ()
+gameLoopPvE player board = do
+	renderBoard board
+	putStrLn (show player ++ " turn: ")
+	inpStr <- getLine
+	let (pos, dir) = filterGameInput inpStr
+	if verifyMove pos board
+		then do
+			let newBoard = getNewBoard board pos (Occupied player) dir
+			let (gameover, msg) = verifyBoard newBoard
+			if gameover
+				then do
+					renderBoard newBoard
+					putStrLn msg
+				else do
+					rndSeed <- newStdGen
+					let (tempBoard, entityMove) = entityAI rndSeed newBoard
+					putStrLn entityMove
+					let (gameover, msg) = verifyBoard tempBoard
+					if gameover
+						then do
+							renderBoard tempBoard
+							putStrLn msg
+						else do
+							gameLoopPvE player tempBoard
+		else do
+			putStrLn "Invalid move, try again..."
+			gameLoopPvE player board	
+
 someFunc :: IO ()
 someFunc = do
 	let board = newBoard
-	gameLoopPvP X board
+	gameLoopPvE X board

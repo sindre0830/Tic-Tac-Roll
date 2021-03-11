@@ -32,4 +32,6 @@
 
 [0.1.0.15] formatting: Simplified PvP gameloop
 
+[0.1.0.16] development: Added PvE gameloop with simple entity AI
+
 ## Unreleased changes
