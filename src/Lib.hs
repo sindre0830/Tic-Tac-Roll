@@ -2,7 +2,7 @@ module Lib
 	( someFunc
 	) where
 
-import Data.List ( intercalate )
+import Data.List ( intercalate, transpose )
 import Data.Char ( toLower )
 import System.Random( newStdGen, randomR, StdGen )
 
@@ -10,7 +10,7 @@ data Mark = X | O
 data Cell = Occupied Mark | Empty
 
 type Direction = String
-type BoardSize = Int
+type Size = Int
 type Position = Int
 type Index = Int
 type Board = [Cell]
@@ -19,7 +19,7 @@ type Gameover = Bool
 type Input = String
 type Output = String
 
-boardSize :: BoardSize
+boardSize :: Size
 boardSize = 3
 
 instance Show Mark where
@@ -124,9 +124,10 @@ verifyBoard board
 	| otherwise 					= (False, "")
 
 rotateL :: Matrix -> Matrix
-rotateL [] = []
-rotateL ([]:_) = []
-rotateL m = map last m : rotateL (map init m)
+rotateL matrix = transpose $ map reverse matrix
+
+rotateR :: Matrix -> Matrix
+rotateR matrix = rotateL $ rotateL $ rotateL matrix
 
 listToMatrix :: Board -> Matrix
 listToMatrix [] = []
@@ -136,7 +137,7 @@ rotateBoard :: Board -> Direction -> Board
 rotateBoard board dir = do
 	if dir == "left"
 		then concat $ rotateL $ listToMatrix $ swapPieces board
-		else concat $ rotateL $ rotateL $ rotateL $ listToMatrix $ swapPieces board
+		else concat $ rotateR $ listToMatrix $ swapPieces board
 
 swapPieces :: Board -> Board
 swapPieces (x:xs) = do
@@ -189,9 +190,9 @@ removeOccupied (x:xs) = do
 		then x : removeOccupied xs
 		else removeOccupied xs
 
-getRndIndex :: Index -> StdGen -> Index 
-getRndIndex size rndSeed = do
-	let (rndIndex, _) = randomR (0, size - 1) rndSeed :: (Index, StdGen)
+getRndIndex :: Size -> StdGen -> Index 
+getRndIndex arrSize rndSeed = do
+	let (rndIndex, _) = randomR (0, arrSize - 1) rndSeed :: (Index, StdGen)
 	rndIndex
 
 entityAI :: Board -> StdGen -> (Board, Output)
@@ -236,4 +237,4 @@ gameLoopPvE mark board = do
 someFunc :: IO ()
 someFunc = do
 	let board = newBoard
-	gameLoopPvE X board
+	gameLoopPvP X board

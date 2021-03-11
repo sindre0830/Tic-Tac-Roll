@@ -48,4 +48,6 @@
 
 [1.13.7] formatting: Removed redundancy and simplified code
 
+[1.13.8] formatting: Simplified rotation and renamed variables
+
 ## Unreleased changes
