@@ -44,4 +44,6 @@
 
 [1.13.5] formatting: Simplified newBoard and verifyMove
 
+[1.13.6] formatting: Added and modified types for readability
+
 ## Unreleased changes

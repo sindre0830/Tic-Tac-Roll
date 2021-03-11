@@ -9,9 +9,15 @@ import System.Random( newStdGen, randomR, StdGen )
 data Mark = X | O
 data Cell = Occupied Mark | Empty
 
+type Direction = String
 type BoardSize = Int
 type Position = Int
+type Index = Int
 type Board = [Cell]
+type Matrix = [Board]
+type Gameover = Bool
+type Input = String
+type Output = String
 
 boardSize :: BoardSize
 boardSize = 3
@@ -36,9 +42,9 @@ instance Eq Cell where
 	Empty == Empty 					= True
 	_ == _ 							= False
 
-nextMark :: Mark -> Mark
-nextMark X = O
-nextMark O = X
+switchMark :: Mark -> Mark
+switchMark X = O
+switchMark O = X
 
 renderRow :: Board -> String
 renderRow row = intercalate " | " $ fmap show row
@@ -66,32 +72,32 @@ verifyMove pos board
 	| otherwise 			= board!!(pos - 1) == Empty
 
 -- https://www.reddit.com/r/haskell/comments/8jui5k/how_to_replace_an_element_at_an_index_in_a_list/dz4dcu5/
-updateBoard :: Board -> Int -> Cell -> Board
+updateBoard :: Board -> Position -> Cell -> Board
 updateBoard xs i e = case splitAt (i - 1) xs of
    (before, _:after) -> before ++ e: after
    _ -> xs
 
-checkRow :: Board -> (Bool, Mark) 
+checkRow :: Board -> (Gameover, Mark) 
 checkRow board
 	| null board 									= (False, X)
 	| all (== Occupied X) (take boardSize board) 	= (True, X) 
 	| all (== Occupied O) (take boardSize board) 	= (True, O)
 	| otherwise 									= checkRow (drop boardSize board)
 
-checkColumn :: Board -> BoardSize -> (Bool, Mark)
+checkColumn :: Board -> BoardSize -> (Gameover, Mark)
 checkColumn board size
 	| null board 													= (False, X)
 	| all (== Occupied X) (head board : takeNth size (tail board)) 	= (True, X)
 	| all (== Occupied O) (head board : takeNth size (tail board)) 	= (True, O)
 	| otherwise 													= checkColumn (dropNth size (tail board)) (size - 1)
 
-checkDiagonalL :: Board -> (Bool, Mark)
+checkDiagonalL :: Board -> (Gameover, Mark)
 checkDiagonalL board
 	| all (== Occupied X) (head board : takeNth (boardSize + 1) (tail board)) 	= (True, X)
 	| all (== Occupied O) (head board : takeNth (boardSize + 1) (tail board)) 	= (True, O)
 	| otherwise 																= (False, X)
 
-checkDiagonalR :: Board -> (Bool, Mark)
+checkDiagonalR :: Board -> (Gameover, Mark)
 checkDiagonalR board
 	| all (== Occupied X) (take boardSize (board!!(boardSize - 1) : takeNth (boardSize - 1) (drop boardSize board))) 	= (True, X)
 	| all (== Occupied O) (take boardSize (board!!(boardSize - 1) : takeNth (boardSize - 1) (drop boardSize board))) 	= (True, O)
@@ -108,7 +114,7 @@ dropNth :: Int -> [a] -> [a]
 dropNth _ [] = []
 dropNth n xs = take (n - 1) xs ++ dropNth n (drop n xs)
 
-verifyBoard :: Board -> (Bool, String)
+verifyBoard :: Board -> (Gameover, Output)
 verifyBoard board
 	| fst (checkRow board) 				= (True, show (snd (checkRow board)) ++ " won!")
 	| fst (checkColumn board boardSize) = (True, show (snd (checkColumn board boardSize)) ++ " won!")
@@ -117,19 +123,19 @@ verifyBoard board
 	| verifyState board 				= (True, "It's a tie!")
 	| otherwise 						= (False, "") 
 
-verifyState :: Board -> Bool
+verifyState :: Board -> Gameover
 verifyState = notElem Empty
 
-rotateL :: [Board] -> [Board]
+rotateL :: Matrix -> Matrix
 rotateL [] = []
 rotateL ([]:_) = []
 rotateL m = map last m : rotateL (map init m)
 
-listToMatrix :: Board -> [Board]
+listToMatrix :: Board -> Matrix
 listToMatrix [] = []
 listToMatrix arr = take boardSize arr : listToMatrix (drop boardSize arr)
 
-rotateBoard :: Board -> String -> Board
+rotateBoard :: Board -> Direction -> Board
 rotateBoard board dir = do
 	if dir == "left"
 		then concat $ rotateL $ listToMatrix $ swapPieces board
@@ -146,73 +152,73 @@ stringToLower :: String -> String
 stringToLower [] = []
 stringToLower xs = map toLower xs
 
-filterGameInput :: String -> (Int, String)
+filterGameInput :: Input -> (Position, Direction)
 filterGameInput inpStr = do
 	let arrInp = words $ stringToLower inpStr
-	let pos = read (head arrInp) :: Int
+	let pos = read (head arrInp) :: Position
 	if length arrInp > 1 && ((arrInp!!1) == "left" || (arrInp!!1) == "right")
 		then (pos, arrInp!!1)
 		else (pos, "")
 
-getNewBoard :: Board -> Int -> Cell -> String -> Board
-getNewBoard board pos player dir = do
+getNewBoard :: Board -> Position -> Mark -> Direction -> Board
+getNewBoard board pos mark dir = do
 	if dir /= ""
 		then do
-			let tmpBoard = updateBoard board pos player
+			let tmpBoard = updateBoard board pos (Occupied mark)
 			rotateBoard tmpBoard dir
 		else do
-			updateBoard board pos player
+			updateBoard board pos (Occupied mark)
 
 gameLoopPvP :: Mark -> Board -> IO ()
-gameLoopPvP player board = do
+gameLoopPvP mark board = do
 	renderBoard board
-	putStrLn (show player ++ " turn: ")
+	putStrLn (show mark ++ " turn: ")
 	inpStr <- getLine
 	let (pos, dir) = filterGameInput inpStr
 	if verifyMove pos board
 		then do
-			let newBoard = getNewBoard board pos (Occupied player) dir
+			let newBoard = getNewBoard board pos mark dir
 			let (gameover, msg) = verifyBoard newBoard
 			if gameover
 				then do
 					renderBoard newBoard
 					putStrLn msg
-				else gameLoopPvP (nextMark player) newBoard
+				else gameLoopPvP (switchMark mark) newBoard
 		else do
 			putStrLn "Invalid move, try again..."
-			gameLoopPvP player board
+			gameLoopPvP mark board
 
-removeOccupied :: [(Cell, Int)] -> [(Cell, Int)]
+removeOccupied :: [(Cell, Index)] -> [(Cell, Index)]
 removeOccupied [] = []
 removeOccupied (x:xs) = do
 	if fst x == Empty
 		then x : removeOccupied xs
 		else removeOccupied xs
 
-getRndIndex :: StdGen -> Int -> Int 
-getRndIndex rndSeed size = do
-	let (rndIndex, _) = randomR (0, size - 1) rndSeed :: (Int, StdGen)
+getRndIndex :: Index -> StdGen -> Index 
+getRndIndex size rndSeed = do
+	let (rndIndex, _) = randomR (0, size - 1) rndSeed :: (Index, StdGen)
 	rndIndex
 
-entityAI :: StdGen -> Board -> (Board, String)
-entityAI rndSeed board = do
+entityAI :: Board -> StdGen -> (Board, Output)
+entityAI board rndSeed = do
 	let boardIndex = zip board [1..(length board)]
 	let arrIndex = map snd (removeOccupied boardIndex)
-	let pos = arrIndex !! getRndIndex rndSeed (length arrIndex)
+	let pos = arrIndex !! getRndIndex (length arrIndex) rndSeed
 	let arrDir = ["left", "right", ""]
-	let dir = arrDir !! getRndIndex rndSeed (length arrDir)
-	let newBoard = getNewBoard board pos (Occupied O) dir
+	let dir = arrDir !! getRndIndex (length arrDir) rndSeed
+	let newBoard = getNewBoard board pos O dir
 	(newBoard, show pos ++ " " ++ dir)
 
 gameLoopPvE :: Mark -> Board -> IO ()
-gameLoopPvE player board = do
+gameLoopPvE mark board = do
 	renderBoard board
-	putStrLn (show player ++ " turn: ")
+	putStrLn (show mark ++ " turn: ")
 	inpStr <- getLine
 	let (pos, dir) = filterGameInput inpStr
 	if verifyMove pos board
 		then do
-			let newBoard = getNewBoard board pos (Occupied player) dir
+			let newBoard = getNewBoard board pos mark dir
 			let (gameover, msg) = verifyBoard newBoard
 			if gameover
 				then do
@@ -220,7 +226,7 @@ gameLoopPvE player board = do
 					putStrLn msg
 				else do
 					rndSeed <- newStdGen
-					let (tempBoard, entityMove) = entityAI rndSeed newBoard
+					let (tempBoard, entityMove) = entityAI newBoard rndSeed
 					putStrLn entityMove
 					let (gameover, msg) = verifyBoard tempBoard
 					if gameover
@@ -228,10 +234,10 @@ gameLoopPvE player board = do
 							renderBoard tempBoard
 							putStrLn msg
 						else do
-							gameLoopPvE player tempBoard
+							gameLoopPvE mark tempBoard
 		else do
 			putStrLn "Invalid move, try again..."
-			gameLoopPvE player board	
+			gameLoopPvE mark board	
 
 someFunc :: IO ()
 someFunc = do
