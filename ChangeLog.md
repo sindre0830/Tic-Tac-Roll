@@ -54,4 +54,6 @@
 
 [1.13.10] formatting: Modified print layout
 
+[1.13.11] setup: Added hie.yaml file to prevent cradle issues with VSCode
+
 ## Unreleased changes
