@@ -57,13 +57,13 @@ renderBoard board = do
 	renderBoard (drop boardSize board)
 
 newBoard :: Board
-newBoard = [Empty | i <- [1..(boardSize * boardSize)]]
+newBoard = replicate (boardSize * boardSize) Empty
 
 verifyMove :: Position -> Board -> Bool
 verifyMove pos board
-	| pos < 1 						= False
-	| pos > (boardSize * boardSize) = False
-	| otherwise 					= board!!(pos - 1) == Empty
+	| pos < 1 				= False
+	| pos > length board 	= False
+	| otherwise 			= board!!(pos - 1) == Empty
 
 -- https://www.reddit.com/r/haskell/comments/8jui5k/how_to_replace_an_element_at_an_index_in_a_list/dz4dcu5/
 updateBoard :: Board -> Int -> Cell -> Board

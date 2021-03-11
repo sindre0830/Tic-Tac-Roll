@@ -42,4 +42,6 @@
 
 [1.13.4] formatting: Renamed type Move to Mark
 
+[1.13.5] formatting: Simplified newBoard and verifyMove
+
 ## Unreleased changes
