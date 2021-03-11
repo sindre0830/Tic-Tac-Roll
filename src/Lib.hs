@@ -6,8 +6,8 @@ import Data.List ( intercalate )
 import Data.Char ( toLower )
 import System.Random( newStdGen, randomR, StdGen )
 
-data Move = X | O
-data Cell = Occupied Move | Empty
+data Mark = X | O
+data Cell = Occupied Mark | Empty
 
 type BoardSize = Int
 type Position = Int
@@ -16,11 +16,11 @@ type Board = [Cell]
 boardSize :: BoardSize
 boardSize = 3
 
-instance Show Move where
+instance Show Mark where
 	show X = "X"
 	show O = "O"
 
-instance Eq Move where
+instance Eq Mark where
 	X == X = True 
 	O == O = True
 	_ == _ = False
@@ -36,9 +36,9 @@ instance Eq Cell where
 	Empty == Empty 					= True
 	_ == _ 							= False
 
-nextMove :: Move -> Move
-nextMove X = O
-nextMove O = X
+nextMark :: Mark -> Mark
+nextMark X = O
+nextMark O = X
 
 renderRow :: Board -> String
 renderRow row = intercalate " | " $ fmap show row
@@ -71,27 +71,27 @@ updateBoard xs i e = case splitAt (i - 1) xs of
    (before, _:after) -> before ++ e: after
    _ -> xs
 
-checkRow :: Board -> (Bool, Move) 
+checkRow :: Board -> (Bool, Mark) 
 checkRow board
 	| null board 									= (False, X)
 	| all (== Occupied X) (take boardSize board) 	= (True, X) 
 	| all (== Occupied O) (take boardSize board) 	= (True, O)
 	| otherwise 									= checkRow (drop boardSize board)
 
-checkColumn :: Board -> BoardSize -> (Bool, Move)
+checkColumn :: Board -> BoardSize -> (Bool, Mark)
 checkColumn board size
 	| null board 													= (False, X)
 	| all (== Occupied X) (head board : takeNth size (tail board)) 	= (True, X)
 	| all (== Occupied O) (head board : takeNth size (tail board)) 	= (True, O)
 	| otherwise 													= checkColumn (dropNth size (tail board)) (size - 1)
 
-checkDiagonalL :: Board -> (Bool, Move)
+checkDiagonalL :: Board -> (Bool, Mark)
 checkDiagonalL board
 	| all (== Occupied X) (head board : takeNth (boardSize + 1) (tail board)) 	= (True, X)
 	| all (== Occupied O) (head board : takeNth (boardSize + 1) (tail board)) 	= (True, O)
 	| otherwise 																= (False, X)
 
-checkDiagonalR :: Board -> (Bool, Move)
+checkDiagonalR :: Board -> (Bool, Mark)
 checkDiagonalR board
 	| all (== Occupied X) (take boardSize (board!!(boardSize - 1) : takeNth (boardSize - 1) (drop boardSize board))) 	= (True, X)
 	| all (== Occupied O) (take boardSize (board!!(boardSize - 1) : takeNth (boardSize - 1) (drop boardSize board))) 	= (True, O)
@@ -163,7 +163,7 @@ getNewBoard board pos player dir = do
 		else do
 			updateBoard board pos player
 
-gameLoopPvP :: Move -> Board -> IO ()
+gameLoopPvP :: Mark -> Board -> IO ()
 gameLoopPvP player board = do
 	renderBoard board
 	putStrLn (show player ++ " turn: ")
@@ -177,7 +177,7 @@ gameLoopPvP player board = do
 				then do
 					renderBoard newBoard
 					putStrLn msg
-				else gameLoopPvP (nextMove player) newBoard
+				else gameLoopPvP (nextMark player) newBoard
 		else do
 			putStrLn "Invalid move, try again..."
 			gameLoopPvP player board
@@ -204,7 +204,7 @@ entityAI rndSeed board = do
 	let newBoard = getNewBoard board pos (Occupied O) dir
 	(newBoard, show pos ++ " " ++ dir)
 
-gameLoopPvE :: Move -> Board -> IO ()
+gameLoopPvE :: Mark -> Board -> IO ()
 gameLoopPvE player board = do
 	renderBoard board
 	putStrLn (show player ++ " turn: ")

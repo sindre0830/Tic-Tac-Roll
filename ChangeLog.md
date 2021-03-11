@@ -40,4 +40,6 @@
 
 [1.13.3] formatting: Added custom type Board
 
+[1.13.4] formatting: Renamed type Move to Mark
+
 ## Unreleased changes
