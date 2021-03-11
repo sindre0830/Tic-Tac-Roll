@@ -52,4 +52,6 @@
 
 [1.13.9] formatting: Switched from guards to nested if statements in verifyBoard
 
+[1.13.10] formatting: Modified print layout
+
 ## Unreleased changes

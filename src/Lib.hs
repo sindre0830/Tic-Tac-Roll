@@ -5,6 +5,7 @@ module Lib
 import Data.List ( intercalate, transpose )
 import Data.Char ( toLower )
 import System.Random( newStdGen, randomR, StdGen )
+import System.IO ( hFlush, stdout )
 
 data Mark = X | O
 data Cell = Occupied Mark | Empty
@@ -59,7 +60,7 @@ renderBoard board = do
 	putStrLn $ renderRow row
 	if length board > boardSize 
 		then putStrLn dividingLine 
-		else putStr ""
+		else pure ()
 	renderBoard (drop boardSize board)
 
 newBoard :: Board
@@ -172,16 +173,20 @@ getNewBoard :: Board -> Position -> Mark -> Direction -> Board
 getNewBoard board pos mark dir = do
 	let newBoard = updateBoard board pos (Occupied mark)
 	if dir /= ""
-		then do
-			rotateBoard newBoard dir
-		else do
-			newBoard
+		then rotateBoard newBoard dir
+		else newBoard
+
+renderFrame :: Board -> Output -> IO ()
+renderFrame board msg = do
+	renderBoard board
+	putStr msg
+	hFlush stdout
 
 gameLoopPvP :: Mark -> Board -> IO ()
 gameLoopPvP mark board = do
-	renderBoard board
-	putStrLn (show mark ++ " turn: ")
+	renderFrame board ("Player " ++ show mark ++ ": ")
 	inpStr <- getLine
+	putStrLn ""
 	let (pos, dir) = filterGameInput inpStr
 	if verifyMove pos board
 		then do
@@ -189,8 +194,7 @@ gameLoopPvP mark board = do
 			let (gameover, msg) = verifyBoard newBoard
 			if gameover
 				then do
-					renderBoard newBoard
-					putStrLn msg
+					renderFrame newBoard msg
 				else gameLoopPvP (switchMark mark) newBoard
 		else do
 			putStrLn "Invalid move, try again..."
@@ -220,8 +224,7 @@ entityAI board rndSeed = do
 
 gameLoopPvE :: Mark -> Board -> IO ()
 gameLoopPvE mark board = do
-	renderBoard board
-	putStrLn (show mark ++ " turn: ")
+	renderFrame board ("Player " ++ show mark ++ ": ")
 	inpStr <- getLine
 	let (pos, dir) = filterGameInput inpStr
 	if verifyMove pos board
@@ -230,17 +233,17 @@ gameLoopPvE mark board = do
 			let (gameover, msg) = verifyBoard newBoard
 			if gameover
 				then do
-					renderBoard newBoard
-					putStrLn msg
+					putStrLn ""
+					renderFrame newBoard msg
 				else do
 					rndSeed <- newStdGen
 					let (tempBoard, entityMove) = entityAI newBoard rndSeed
-					putStrLn entityMove
+					putStrLn ("Player O: " ++ entityMove)
+					putStrLn ""
 					let (gameover, msg) = verifyBoard tempBoard
 					if gameover
 						then do
-							renderBoard tempBoard
-							putStrLn msg
+							renderFrame tempBoard msg
 						else do
 							gameLoopPvE mark tempBoard
 		else do
@@ -250,4 +253,4 @@ gameLoopPvE mark board = do
 someFunc :: IO ()
 someFunc = do
 	let board = newBoard
-	gameLoopPvP X board
+	gameLoopPvE X board
