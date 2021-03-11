@@ -38,4 +38,6 @@
 
 [1.13.2] formatting: Fixed indentation
 
+[1.13.3] formatting: Added custom type Board
+
 ## Unreleased changes

@@ -11,6 +11,7 @@ data Cell = Occupied Move | Empty
 
 type BoardSize = Int
 type Position = Int
+type Board = [Cell]
 
 boardSize :: BoardSize
 boardSize = 3
@@ -39,13 +40,13 @@ nextMove :: Move -> Move
 nextMove X = O
 nextMove O = X
 
-renderRow :: [Cell] -> String
+renderRow :: Board -> String
 renderRow row = intercalate " | " $ fmap show row
 
 dividingLine :: String
 dividingLine = mappend "-" (replicate (4 * (boardSize - 1)) '-')
 
-renderBoard :: [Cell] -> IO ()
+renderBoard :: Board -> IO ()
 renderBoard [] = putStrLn ""
 renderBoard board = do
 	let row = take boardSize board
@@ -55,42 +56,42 @@ renderBoard board = do
 		else putStr ""
 	renderBoard (drop boardSize board)
 
-newBoard :: [Cell]
+newBoard :: Board
 newBoard = [Empty | i <- [1..(boardSize * boardSize)]]
 
-verifyMove :: Position -> [Cell] -> Bool
+verifyMove :: Position -> Board -> Bool
 verifyMove pos board
 	| pos < 1 						= False
 	| pos > (boardSize * boardSize) = False
 	| otherwise 					= board!!(pos - 1) == Empty
 
 -- https://www.reddit.com/r/haskell/comments/8jui5k/how_to_replace_an_element_at_an_index_in_a_list/dz4dcu5/
-updateBoard :: [Cell] -> Int -> Cell -> [Cell]
+updateBoard :: Board -> Int -> Cell -> Board
 updateBoard xs i e = case splitAt (i - 1) xs of
    (before, _:after) -> before ++ e: after
    _ -> xs
 
-checkRow :: [Cell] -> (Bool, Move) 
+checkRow :: Board -> (Bool, Move) 
 checkRow board
 	| null board 									= (False, X)
 	| all (== Occupied X) (take boardSize board) 	= (True, X) 
 	| all (== Occupied O) (take boardSize board) 	= (True, O)
 	| otherwise 									= checkRow (drop boardSize board)
 
-checkColumn :: [Cell] -> BoardSize -> (Bool, Move)
+checkColumn :: Board -> BoardSize -> (Bool, Move)
 checkColumn board size
 	| null board 													= (False, X)
 	| all (== Occupied X) (head board : takeNth size (tail board)) 	= (True, X)
 	| all (== Occupied O) (head board : takeNth size (tail board)) 	= (True, O)
 	| otherwise 													= checkColumn (dropNth size (tail board)) (size - 1)
 
-checkDiagonalL :: [Cell] -> (Bool, Move)
+checkDiagonalL :: Board -> (Bool, Move)
 checkDiagonalL board
 	| all (== Occupied X) (head board : takeNth (boardSize + 1) (tail board)) 	= (True, X)
 	| all (== Occupied O) (head board : takeNth (boardSize + 1) (tail board)) 	= (True, O)
 	| otherwise 																= (False, X)
 
-checkDiagonalR :: [Cell] -> (Bool, Move)
+checkDiagonalR :: Board -> (Bool, Move)
 checkDiagonalR board
 	| all (== Occupied X) (take boardSize (board!!(boardSize - 1) : takeNth (boardSize - 1) (drop boardSize board))) 	= (True, X)
 	| all (== Occupied O) (take boardSize (board!!(boardSize - 1) : takeNth (boardSize - 1) (drop boardSize board))) 	= (True, O)
@@ -107,7 +108,7 @@ dropNth :: Int -> [a] -> [a]
 dropNth _ [] = []
 dropNth n xs = take (n - 1) xs ++ dropNth n (drop n xs)
 
-verifyBoard :: [Cell] -> (Bool, String)
+verifyBoard :: Board -> (Bool, String)
 verifyBoard board
 	| fst (checkRow board) 				= (True, show (snd (checkRow board)) ++ " won!")
 	| fst (checkColumn board boardSize) = (True, show (snd (checkColumn board boardSize)) ++ " won!")
@@ -116,25 +117,25 @@ verifyBoard board
 	| verifyState board 				= (True, "It's a tie!")
 	| otherwise 						= (False, "") 
 
-verifyState :: [Cell] -> Bool
+verifyState :: Board -> Bool
 verifyState = notElem Empty
 
-rotateL :: [[Cell]] -> [[Cell]]
+rotateL :: [Board] -> [Board]
 rotateL [] = []
 rotateL ([]:_) = []
 rotateL m = map last m : rotateL (map init m)
 
-listToMatrix :: [Cell] -> [[Cell]]
+listToMatrix :: Board -> [Board]
 listToMatrix [] = []
 listToMatrix arr = take boardSize arr : listToMatrix (drop boardSize arr)
 
-rotateBoard :: [Cell] -> String -> [Cell]
+rotateBoard :: Board -> String -> Board
 rotateBoard board dir = do
 	if dir == "left"
 		then concat $ rotateL $ listToMatrix $ swapPieces board
 		else concat $ rotateL $ rotateL $ rotateL $ listToMatrix $ swapPieces board
 
-swapPieces :: [Cell] -> [Cell]
+swapPieces :: Board -> Board
 swapPieces [] = []
 swapPieces [x] = [x]
 swapPieces (x:xs) = do
@@ -153,7 +154,7 @@ filterGameInput inpStr = do
 		then (pos, arrInp!!1)
 		else (pos, "")
 
-getNewBoard :: [Cell] -> Int -> Cell -> String -> [Cell]
+getNewBoard :: Board -> Int -> Cell -> String -> Board
 getNewBoard board pos player dir = do
 	if dir /= ""
 		then do
@@ -162,7 +163,7 @@ getNewBoard board pos player dir = do
 		else do
 			updateBoard board pos player
 
-gameLoopPvP :: Move -> [Cell] -> IO ()
+gameLoopPvP :: Move -> Board -> IO ()
 gameLoopPvP player board = do
 	renderBoard board
 	putStrLn (show player ++ " turn: ")
@@ -193,7 +194,7 @@ getRndIndex rndSeed size = do
 	let (rndIndex, _) = randomR (0, size - 1) rndSeed :: (Int, StdGen)
 	rndIndex
 
-entityAI :: StdGen -> [Cell] -> ([Cell], String)
+entityAI :: StdGen -> Board -> (Board, String)
 entityAI rndSeed board = do
 	let boardIndex = zip board [1..(length board)]
 	let arrIndex = map snd (removeOccupied boardIndex)
@@ -203,7 +204,7 @@ entityAI rndSeed board = do
 	let newBoard = getNewBoard board pos (Occupied O) dir
 	(newBoard, show pos ++ " " ++ dir)
 
-gameLoopPvE :: Move -> [Cell] -> IO ()
+gameLoopPvE :: Move -> Board -> IO ()
 gameLoopPvE player board = do
 	renderBoard board
 	putStrLn (show player ++ " turn: ")
