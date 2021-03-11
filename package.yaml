@@ -1,5 +1,5 @@
 name:                assignment-one
-version:             0.1.0.16
+version:             1.13.1
 github:              "https://git.gvk.idi.ntnu.no/course/prog2006/as/sindre0830/assignment-one"
 license:             BSD3
 author:              "Sindre Eiklid"
@@ -25,7 +25,7 @@ dependencies:
 library:
   source-dirs: src
   dependencies:
-    - random
+  - random
 
 executables:
   assignment-one-exe:

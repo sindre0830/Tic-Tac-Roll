@@ -1,37 +1,39 @@
 # Changelog for assignment-one
 
-[0.1.0.0] setup: Initial commit
+[1.0.0] setup: Initial commit
 
-[0.1.0.1] development: Added new types and a newBoard function
+[1.1.0] development: Added new types and a newBoard function
 
-[0.1.0.2] development: Added function to render board
+[1.2.0] development: Added function to render board
 
-[0.1.0.3] development: Added function to validate move
+[1.3.0] development: Added function to validate move
 
-[0.1.0.4] development: Added simple game loop and a function to update board
+[1.4.0] development: Added simple game loop and a function to update board
 
-[0.1.0.5] development: Added win condition if a row match
+[1.5.0] development: Added win condition if a row match
 
-[0.1.0.6] development: Changed row validation to only check relevant row
+[1.6.0] development: Changed row validation to only check relevant row
 
-[0.1.0.7] development: Added win condition if a column match
+[1.7.0] development: Added win condition if a column match
 
-[0.1.0.8] development: Added win condition if a diagonal match
+[1.8.0] development: Added win condition if a diagonal match
 
-[0.1.0.9] development: Added tie condition if no win condition is met and board is full
+[1.9.0] development: Added tie condition if no win condition is met and board is full
 
-[0.1.0.10] formatting: Reformatted some code to keep consistency
+[1.9.1] formatting: Reformatted some code to keep consistency
 
-[0.1.0.11] development: Added rotate function
+[1.10.0] development: Added rotate function
 
-[0.1.0.12] development: Changed board validation to validate the entire board
+[1.11.0] development: Changed board validation to validate the entire board
 
-[0.1.0.13] development: Added swapping function
+[1.12.0] development: Added swapping function
 
-[0.1.0.14] formatting: Added GoLint suggestions
+[1.12.1] formatting: Added GoLint suggestions
 
-[0.1.0.15] formatting: Simplified PvP gameloop
+[1.12.2] formatting: Simplified PvP gameloop
 
-[0.1.0.16] development: Added PvE gameloop with simple entity AI
+[1.13.0] development: Added PvE gameloop with simple entity AI
+
+[1.13.1] formatting: Changed version format
 
 ## Unreleased changes
