@@ -84,12 +84,12 @@ checkRow board
 	| all (== Occupied O) (take boardSize board) 	= (True, O)
 	| otherwise 									= checkRow (drop boardSize board)
 
-checkColumn :: Board -> BoardSize -> (Gameover, Mark)
-checkColumn board size
-	| null board 													= (False, X)
-	| all (== Occupied X) (head board : takeNth size (tail board)) 	= (True, X)
-	| all (== Occupied O) (head board : takeNth size (tail board)) 	= (True, O)
-	| otherwise 													= checkColumn (dropNth size (tail board)) (size - 1)
+checkColumn :: Board -> (Gameover, Mark)
+checkColumn board
+	| null board 																				= (False, X)
+	| all (== Occupied X) (head board : takeNth (length board `div` boardSize) (tail board)) 	= (True, X)
+	| all (== Occupied O) (head board : takeNth (length board `div` boardSize) (tail board)) 	= (True, O)
+	| otherwise 																				= checkColumn (dropNth (length board `div` boardSize) (tail board))
 
 checkDiagonalL :: Board -> (Gameover, Mark)
 checkDiagonalL board
@@ -116,15 +116,12 @@ dropNth n xs = take (n - 1) xs ++ dropNth n (drop n xs)
 
 verifyBoard :: Board -> (Gameover, Output)
 verifyBoard board
-	| fst (checkRow board) 				= (True, show (snd (checkRow board)) ++ " won!")
-	| fst (checkColumn board boardSize) = (True, show (snd (checkColumn board boardSize)) ++ " won!")
-	| fst (checkDiagonalL board) 		= (True, show (snd (checkDiagonalL board)) ++ " won!")
-	| fst (checkDiagonalR board) 		= (True, show (snd (checkDiagonalR board)) ++ " won!")
-	| verifyState board 				= (True, "It's a tie!")
-	| otherwise 						= (False, "") 
-
-verifyState :: Board -> Gameover
-verifyState = notElem Empty
+	| fst (checkRow board) 			= (True, show (snd (checkRow board)) ++ " won!")
+	| fst (checkColumn board) 		= (True, show (snd (checkColumn board)) ++ " won!")
+	| fst (checkDiagonalL board) 	= (True, show (snd (checkDiagonalL board)) ++ " won!")
+	| fst (checkDiagonalR board) 	= (True, show (snd (checkDiagonalR board)) ++ " won!")
+	| Empty `notElem` board 		= (True, "It's a tie!")
+	| otherwise 					= (False, "")
 
 rotateL :: Matrix -> Matrix
 rotateL [] = []
@@ -142,32 +139,29 @@ rotateBoard board dir = do
 		else concat $ rotateL $ rotateL $ rotateL $ listToMatrix $ swapPieces board
 
 swapPieces :: Board -> Board
-swapPieces [] = []
-swapPieces [x] = [x]
 swapPieces (x:xs) = do
-	let top = take (boardSize-1) xs
-	((last top : init top) ++ [x]) ++ drop (boardSize-1) xs
+	let top = take (boardSize - 1) xs
+	((last top : init top) ++ [x]) ++ drop (boardSize - 1) xs
 
-stringToLower :: String -> String 
-stringToLower [] = []
-stringToLower xs = map toLower xs
+stringToLower :: String -> String
+stringToLower = map toLower
 
 filterGameInput :: Input -> (Position, Direction)
 filterGameInput inpStr = do
 	let arrInp = words $ stringToLower inpStr
 	let pos = read (head arrInp) :: Position
-	if length arrInp > 1 && ((arrInp!!1) == "left" || (arrInp!!1) == "right")
-		then (pos, arrInp!!1)
+	if length arrInp > 1 && ((arrInp !! 1) == "left" || (arrInp !! 1) == "right")
+		then (pos, arrInp !! 1)
 		else (pos, "")
 
 getNewBoard :: Board -> Position -> Mark -> Direction -> Board
 getNewBoard board pos mark dir = do
+	let newBoard = updateBoard board pos (Occupied mark)
 	if dir /= ""
 		then do
-			let tmpBoard = updateBoard board pos (Occupied mark)
-			rotateBoard tmpBoard dir
+			rotateBoard newBoard dir
 		else do
-			updateBoard board pos (Occupied mark)
+			newBoard
 
 gameLoopPvP :: Mark -> Board -> IO ()
 gameLoopPvP mark board = do

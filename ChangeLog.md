@@ -46,4 +46,6 @@
 
 [1.13.6] formatting: Added and modified types for readability
 
+[1.13.7] formatting: Removed redundancy and simplified code
+
 ## Unreleased changes
