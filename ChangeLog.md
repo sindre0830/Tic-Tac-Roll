@@ -78,4 +78,6 @@
 
 [1.21.0] testing: Added testing to Render module
 
+[1.22.0] development: Using Monads in filterGameInput to handle invalid user input
+
 ## Unreleased changes
