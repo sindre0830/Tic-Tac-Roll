@@ -1,11 +1,12 @@
 module Lib
-	( menu
+	( 
+	module Lib
 	) where
 
-import Data.List ( intercalate, transpose )
-import Data.Char ( toLower )
-import System.Random( newStdGen, randomR, StdGen )
-import System.IO ( hFlush, stdout )
+import Data.List (intercalate, transpose)
+import Data.Char (toLower)
+import System.Random(newStdGen, randomR, StdGen)
+import System.IO (hFlush, stdout)
 
 data Mark = X | O
 data Cell = Occupied Mark | Empty
