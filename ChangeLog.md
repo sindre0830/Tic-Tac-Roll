@@ -72,4 +72,6 @@
 
 [1.19.0] testing: Added testing to Grid module
 
+[1.19.1] formatting: Added indentation in testing description for readability
+
 ## Unreleased changes
