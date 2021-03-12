@@ -96,4 +96,6 @@
 
 [1.30.0] testing: Added testing to AI module
 
+[1.30.1] formatting: Changed function position for readability
+
 ## Unreleased changes

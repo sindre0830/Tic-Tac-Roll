@@ -9,9 +9,6 @@ import Data.Maybe ( fromJust, isJust )
 
 import Dictionary ( Input, Position, Direction )
 
-stringToLower :: String -> String
-stringToLower = map toLower
-
 filterGameInput :: Input -> (Position, Direction)
 filterGameInput inpStr
     | inpStr == "" = (0, "")
@@ -23,3 +20,6 @@ filterGameInput inpStr
                 then (fromJust pos, arrInp !! 1)
                 else (fromJust pos, "")
             else (0, "")
+
+stringToLower :: String -> String
+stringToLower = map toLower

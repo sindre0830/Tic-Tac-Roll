@@ -4,10 +4,10 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 006f1fa70f01e6ea8fbb317bbfb5c84281d83cdd73aa9b16917334712144ddfb
+-- hash: 213c9770fec233272f6b7e928cd52173c4bf462bc55c5017330c41dd0b83c76d
 
 name:           assignment-one
-version:        1.30.0
+version:        1.30.1
 description:    Please see the README on GitHub at <https://git.gvk.idi.ntnu.no/course/prog2006/as/sindre0830/assignment-one#readme>
 homepage:       https://github.com/https://git.gvk.idi.ntnu.no/course/prog2006/as/sindre0830/assignment-one#readme
 bug-reports:    https://github.com/https://git.gvk.idi.ntnu.no/course/prog2006/as/sindre0830/assignment-one/issues

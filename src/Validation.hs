@@ -19,6 +19,28 @@ verifyMove pos board
     | pos > length board = False
     | otherwise          = board!!(pos - 1) == Empty
 
+verifyBoard :: Board -> Size -> (Gameover, Output)
+verifyBoard board boardSize = do
+    let (flag, mark) = checkRow board boardSize
+    if flag
+        then (True, show mark ++ " won!")
+        else do
+            let (flag, mark) = checkColumn board boardSize
+            if flag
+                then (True, show mark ++ " won!")
+                else do
+                    let (flag, mark) = checkDiagonalL board boardSize
+                    if flag
+                        then (True, show mark ++ " won!")
+                        else do
+                            let (flag, mark) = checkDiagonalR board boardSize
+                            if flag
+                                then (True, show mark ++ " won!")
+                                else do
+                                    if Empty `notElem` board
+                                        then (True, "It's a tie!")
+                                        else (False, "")
+
 checkRow :: Board -> Size -> (Gameover, Mark) 
 checkRow board boardSize
     | null board                                 = (False, X)
@@ -46,28 +68,6 @@ checkDiagonalR board boardSize
     | all (== Occupied X) (take boardSize (board!!(boardSize - 1) : takeNth (boardSize - 1) (drop boardSize board))) = (True, X)
     | all (== Occupied O) (take boardSize (board!!(boardSize - 1) : takeNth (boardSize - 1) (drop boardSize board))) = (True, O)
     | otherwise                                                                                                      = (False, X)
-
-verifyBoard :: Board -> Size -> (Gameover, Output)
-verifyBoard board boardSize = do
-    let (flag, mark) = checkRow board boardSize
-    if flag
-        then (True, show mark ++ " won!")
-        else do
-            let (flag, mark) = checkColumn board boardSize
-            if flag
-                then (True, show mark ++ " won!")
-                else do
-                    let (flag, mark) = checkDiagonalL board boardSize
-                    if flag
-                        then (True, show mark ++ " won!")
-                        else do
-                            let (flag, mark) = checkDiagonalR board boardSize
-                            if flag
-                                then (True, show mark ++ " won!")
-                                else do
-                                    if Empty `notElem` board
-                                        then (True, "It's a tie!")
-                                        else (False, "")
 
 -- https://stackoverflow.com/a/2028218
 takeNth :: Int -> [a] -> [a]

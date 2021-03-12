@@ -13,6 +13,30 @@ import AI ( entityAI )
 import Grid ( switchMark, newBoard, getNewBoard )
 import InputFilter ( filterGameInput )
 
+menu :: IO ()
+menu = do
+    let boardSize = 3
+    let board = newBoard boardSize
+    putStr "Input command (-h for help): "
+    hFlush stdout
+    input <- getLine
+    if input == "-h"
+        then do
+            putStrLn "Commands:"
+            putStrLn "\tPvP\t\t//Gamemode where two players can compete."
+            putStrLn "\tPvE\t\t//Gamemode where a player can compete with a computer."
+            putStrLn "\tEvE\t\t//Gamemode where a computer competes against a computer."
+            menu
+        else if input == "pvp"
+            then gameLoopPvP X board boardSize
+        else if input == "pve"
+            then gameLoopPvE X board boardSize
+        else if input == "eve"
+            then gameLoopEvE X board boardSize
+        else do
+            putStrLn "Unknown command... Try again.\n"
+            menu
+
 gameLoopPvP :: Mark -> Board -> Size -> IO ()
 gameLoopPvP mark board boardSize = do
     renderFrame board boardSize ("Player " ++ show mark ++ ": ")
@@ -72,27 +96,3 @@ gameLoopEvE mark board boardSize = do
             renderFrame newBoard boardSize msg
         else do
             gameLoopEvE (switchMark mark) newBoard boardSize
-
-menu :: IO ()
-menu = do
-    let boardSize = 3
-    let board = newBoard boardSize
-    putStr "Input command (-h for help): "
-    hFlush stdout
-    input <- getLine
-    if input == "-h"
-        then do
-            putStrLn "Commands:"
-            putStrLn "\tPvP\t\t//Gamemode where two players can compete."
-            putStrLn "\tPvE\t\t//Gamemode where a player can compete with a computer."
-            putStrLn "\tEvE\t\t//Gamemode where a computer competes against a computer."
-            menu
-        else if input == "pvp"
-            then gameLoopPvP X board boardSize
-        else if input == "pve"
-            then gameLoopPvE X board boardSize
-        else if input == "eve"
-            then gameLoopEvE X board boardSize
-        else do
-            putStrLn "Unknown command... Try again.\n"
-            menu

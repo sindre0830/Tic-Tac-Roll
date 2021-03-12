@@ -10,6 +10,38 @@ import Transformation
 import Validation
 import AI
 
+main :: IO ()
+main = do
+    hspec $ do
+        -- Grid
+        spec_switchMark
+        spec_newBoard
+        spec_updateBoard
+        spec_getNewBoard
+        -- Render
+        spec_renderRow
+        spec_dividingLine
+        -- InputFilter
+        spec_stringToLower
+        spec_filterGameInput
+        -- Transformation
+        spec_rotateL
+        spec_rotateR
+        spec_listToMatrix
+        spec_rotateBoard
+        spec_swapPieces
+        -- Validation
+        spec_verifyMove
+        spec_checkRow
+        spec_checkColumn
+        spec_checkDiagonalL
+        spec_checkDiagonalR
+        spec_verifyBoard
+        spec_takeNth
+        spec_dropNth
+        -- AI
+        spec_removeOccupied
+
 -- module Grid
 
 spec_switchMark :: Spec
@@ -291,35 +323,3 @@ spec_removeOccupied = do
             removeOccupied [(Occupied X, 1)]                                                           `shouldBe` []
         it "removeOccupied [(Empty, 1)]                                                                returns [(Empty, 1)]" $ do
             removeOccupied [(Empty, 1)]                                                                `shouldBe` [(Empty, 1)]
-
-main :: IO ()
-main = do
-    hspec $ do
-        -- Grid
-        spec_switchMark
-        spec_newBoard
-        spec_updateBoard
-        spec_getNewBoard
-        -- Render
-        spec_renderRow
-        spec_dividingLine
-        -- InputFilter
-        spec_stringToLower
-        spec_filterGameInput
-        -- Transformation
-        spec_rotateL
-        spec_rotateR
-        spec_listToMatrix
-        spec_rotateBoard
-        spec_swapPieces
-        -- Validation
-        spec_verifyMove
-        spec_checkRow
-        spec_checkColumn
-        spec_checkDiagonalL
-        spec_checkDiagonalR
-        spec_verifyBoard
-        spec_takeNth
-        spec_dropNth
-        -- AI
-        spec_removeOccupied
