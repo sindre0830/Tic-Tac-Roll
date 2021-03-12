@@ -64,4 +64,6 @@
 
 [1.16.1] setup: Split Lib module into multiple modules for readability
 
+[1.17.0] development: Changed boardSize from function to parameter
+
 ## Unreleased changes

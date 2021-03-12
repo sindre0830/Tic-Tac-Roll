@@ -20,12 +20,12 @@ getRndIndex arrSize rndSeed = do
 	let (rndIndex, _) = randomR (0, arrSize - 1) rndSeed :: (Index, StdGen)
 	rndIndex
 
-entityAI :: Board -> Mark -> StdGen -> (Board, Output)
-entityAI board mark rndSeed = do
+entityAI :: Board -> Size -> Mark -> StdGen -> (Board, Output)
+entityAI board boardSize mark rndSeed = do
 	let boardIndex = zip board [1..(length board)]
 	let arrIndex = map snd (removeOccupied boardIndex)
 	let pos = arrIndex !! getRndIndex (length arrIndex) rndSeed
 	let arrDir = ["left", "right", ""]
 	let dir = arrDir !! getRndIndex (length arrDir) rndSeed
-	let newBoard = getNewBoard board pos mark dir
+	let newBoard = getNewBoard board boardSize pos mark dir
 	(newBoard, show pos ++ " " ++ dir)

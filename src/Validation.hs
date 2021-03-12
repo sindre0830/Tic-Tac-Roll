@@ -10,7 +10,8 @@ import Dictionary
       Position,
       Cell(Empty, Occupied),
       Mark(..),
-      boardSize )
+	  Size
+	)
 
 verifyMove :: Position -> Board -> Bool
 verifyMove pos board
@@ -18,47 +19,47 @@ verifyMove pos board
 	| pos > length board 	= False
 	| otherwise 			= board!!(pos - 1) == Empty
 
-checkRow :: Board -> (Gameover, Mark) 
-checkRow board
+checkRow :: Board -> Size -> (Gameover, Mark) 
+checkRow board boardSize
 	| null board 									= (False, X)
 	| all (== Occupied X) (take boardSize board) 	= (True, X) 
 	| all (== Occupied O) (take boardSize board) 	= (True, O)
-	| otherwise 									= checkRow (drop boardSize board)
+	| otherwise 									= checkRow (drop boardSize board) boardSize
 
-checkColumn :: Board -> (Gameover, Mark)
-checkColumn board
+checkColumn :: Board -> Size -> (Gameover, Mark)
+checkColumn board boardSize
 	| null board 																				= (False, X)
 	| all (== Occupied X) (head board : takeNth (length board `div` boardSize) (tail board)) 	= (True, X)
 	| all (== Occupied O) (head board : takeNth (length board `div` boardSize) (tail board)) 	= (True, O)
-	| otherwise 																				= checkColumn (dropNth (length board `div` boardSize) (tail board))
+	| otherwise 																				= checkColumn (dropNth (length board `div` boardSize) (tail board)) boardSize
 
-checkDiagonalL :: Board -> (Gameover, Mark)
-checkDiagonalL board
+checkDiagonalL :: Board -> Size -> (Gameover, Mark)
+checkDiagonalL board boardSize
 	| all (== Occupied X) (head board : takeNth (boardSize + 1) (tail board)) 	= (True, X)
 	| all (== Occupied O) (head board : takeNth (boardSize + 1) (tail board)) 	= (True, O)
 	| otherwise 																= (False, X)
 
-checkDiagonalR :: Board -> (Gameover, Mark)
-checkDiagonalR board
+checkDiagonalR :: Board -> Size -> (Gameover, Mark)
+checkDiagonalR board boardSize
 	| all (== Occupied X) (take boardSize (board!!(boardSize - 1) : takeNth (boardSize - 1) (drop boardSize board))) 	= (True, X)
 	| all (== Occupied O) (take boardSize (board!!(boardSize - 1) : takeNth (boardSize - 1) (drop boardSize board))) 	= (True, O)
 	| otherwise 																										= (False, X)
 
-verifyBoard :: Board -> (Gameover, Output)
-verifyBoard board = do
-	let (flag, mark) = checkRow board
+verifyBoard :: Board -> Size -> (Gameover, Output)
+verifyBoard board boardSize = do
+	let (flag, mark) = checkRow board boardSize
 	if flag
 		then (True, show mark ++ " won!")
 		else do
-			let (flag, mark) = checkColumn board
+			let (flag, mark) = checkColumn board boardSize
 			if flag
 				then (True, show mark ++ " won!")
 				else do
-					let (flag, mark) = checkDiagonalL board
+					let (flag, mark) = checkDiagonalL board boardSize
 					if flag
 						then (True, show mark ++ " won!")
 						else do
-							let (flag, mark) = checkDiagonalR board
+							let (flag, mark) = checkDiagonalR board boardSize
 							if flag
 								then (True, show mark ++ " won!")
 								else do

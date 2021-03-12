@@ -35,6 +35,3 @@ instance Eq Cell where
 	(Occupied O) == (Occupied O) 	= True 
 	Empty == Empty 					= True
 	_ == _ 							= False
-
-boardSize :: Size
-boardSize = 3
