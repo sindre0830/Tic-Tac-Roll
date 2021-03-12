@@ -80,4 +80,6 @@
 
 [1.22.0] development: Using Monads in filterGameInput to handle invalid user input
 
+[1.23.0] testing: Added testing to InputFilter module
+
 ## Unreleased changes

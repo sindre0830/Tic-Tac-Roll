@@ -5,6 +5,7 @@ import Dictionary
 
 import Grid
 import Render
+import InputFilter
 
 -- module Grid
 
@@ -80,6 +81,32 @@ spec_dividingLine = do
         it "dividingLine (-3) returns ''" $ do
             dividingLine (-3) `shouldBe` ""
 
+-- module InputFilter
+
+spec_stringToLower :: Spec
+spec_stringToLower = do
+    describe "stringToLower tests:" $ do
+        it "stringToLower 'ABCabc123 aBc' returns 'abcabc123 abc'" $ do
+            stringToLower "ABCabc123 aBc" `shouldBe` "abcabc123 abc"
+        it "stringToLower ''              returns ''" $ do
+            stringToLower ""              `shouldBe` ""
+
+spec_filterGameInput :: Spec
+spec_filterGameInput = do
+    describe "filterGameInput tests:" $ do
+        it "filterGameInput '1 left'   returns (1, 'left')" $ do
+            filterGameInput "1 left"   `shouldBe` (1, "left")
+        it "filterGameInput '14 right' returns (14, 'right')" $ do
+            filterGameInput "14 right" `shouldBe` (14, "right")
+        it "filterGameInput '0'        returns (0, '')" $ do
+            filterGameInput "0"        `shouldBe` (0, "")
+        it "filterGameInput '4 gfdgf'  returns (4, '')" $ do
+            filterGameInput "4 gfdgf"  `shouldBe` (4, "")
+        it "filterGameInput ''         returns (0, '')" $ do
+            filterGameInput ""         `shouldBe` (0, "")
+        it "filterGameInput 'abc'      returns (0, '')" $ do
+            filterGameInput "abc"      `shouldBe` (0, "")
+
 main :: IO ()
 main = do
     hspec $ do
@@ -91,3 +118,6 @@ main = do
         -- Render
         spec_renderRow
         spec_dividingLine
+        -- InputFilter
+        spec_stringToLower
+        spec_filterGameInput
