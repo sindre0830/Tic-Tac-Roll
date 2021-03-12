@@ -82,4 +82,6 @@
 
 [1.23.0] testing: Added testing to InputFilter module
 
+[1.24.0] development: Added condition in rotateL to return empty Matrix if input is empty
+
 ## Unreleased changes

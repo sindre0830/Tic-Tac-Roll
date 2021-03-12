@@ -8,6 +8,7 @@ import Data.List ( transpose )
 import Dictionary ( Matrix, Board, Direction, Size )
 
 rotateL :: Matrix -> Matrix
+rotateL [[]] = [[]]
 rotateL matrix = transpose $ map reverse matrix
 
 rotateR :: Matrix -> Matrix
