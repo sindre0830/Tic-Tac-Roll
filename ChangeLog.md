@@ -56,4 +56,6 @@
 
 [1.13.11] setup: Added hie.yaml file to prevent cradle issues with VSCode
 
+[1.14.0] development: Added menu for choosing gamemodes
+
 ## Unreleased changes

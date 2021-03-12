@@ -1,6 +1,6 @@
 module Main where
 
-import Lib
+import Lib ( menu )
 
 main :: IO ()
-main = someFunc
+main = menu

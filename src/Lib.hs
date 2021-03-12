@@ -1,5 +1,5 @@
 module Lib
-	( someFunc
+	( menu
 	) where
 
 import Data.List ( intercalate, transpose )
@@ -250,7 +250,22 @@ gameLoopPvE mark board = do
 			putStrLn "Invalid move, try again..."
 			gameLoopPvE mark board	
 
-someFunc :: IO ()
-someFunc = do
+menu :: IO ()
+menu = do
 	let board = newBoard
-	gameLoopPvE X board
+	putStr "Input command (-h for help): "
+	hFlush stdout
+	input <- getLine
+	if input == "-h"
+		then do
+			putStrLn "Commands:"
+			putStrLn "\tPvP\t\t//Gamemode where two players can compete."
+			putStrLn "\tPvE\t\t//Gamemode where a player can compete with a computer."
+			menu
+		else if input == "pvp"
+			then gameLoopPvP X board
+		else if input == "pve"
+			then gameLoopPvE X board
+		else do
+			putStrLn "Unknown command... Try again.\n"
+			menu
