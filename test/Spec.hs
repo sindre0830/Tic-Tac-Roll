@@ -24,6 +24,7 @@ main = do
         -- InputFilter
         spec_stringToLower
         spec_filterGameInput
+        spec_filterMenuInput
         -- Transformation
         spec_rotateL
         spec_rotateR
@@ -141,6 +142,22 @@ spec_filterGameInput = do
             filterGameInput ""         `shouldBe` (0, "")
         it "filterGameInput 'abc'      returns (0, '')" $ do
             filterGameInput "abc"      `shouldBe` (0, "")
+
+spec_filterMenuInput :: Spec
+spec_filterMenuInput = do
+    describe "filterMenuInput tests:" $ do
+        it "filterMenuInput 'pvp 3'    returns ('pvp', 3)" $ do
+            filterMenuInput "pvp 3"    `shouldBe` ("pvp", 3)
+        it "filterMenuInput 'pve 3hh'  returns ('pve', 3)" $ do
+            filterMenuInput "pve 3hh"  `shouldBe` ("pve", 3)
+        it "filterMenuInput 'eve 1'    returns ('eve', 3)" $ do
+            filterMenuInput "eve 1"    `shouldBe` ("eve", 3)
+        it "filterMenuInput 'eve 6'    returns ('eve', 6)" $ do
+            filterMenuInput "eve 6"    `shouldBe` ("eve", 6)
+        it "filterMenuInput 'eve'      returns ('eve', 3)" $ do
+            filterMenuInput "eve"      `shouldBe` ("eve", 3)
+        it "filterMenuInput 'eve abxc' returns ('eve', 3)" $ do
+            filterMenuInput "eve abxc" `shouldBe` ("eve", 3)
 
 -- module Transformation
 

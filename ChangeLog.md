@@ -98,4 +98,6 @@
 
 [1.30.1] formatting: Changed function position for readability
 
+[1.31.0] development: Changed boardSize to be user specified
+
 ## Unreleased changes

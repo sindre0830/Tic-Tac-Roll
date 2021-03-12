@@ -11,27 +11,28 @@ import Render ( renderFrame )
 import Validation ( verifyMove, verifyBoard )
 import AI ( entityAI )
 import Grid ( switchMark, newBoard, getNewBoard )
-import InputFilter ( filterGameInput )
+import InputFilter ( filterMenuInput, filterGameInput )
 
 menu :: IO ()
 menu = do
-    let boardSize = 3
-    let board = newBoard boardSize
-    putStr "Input command (-h for help): "
+    putStr "Input command (-h for help and ctrl-c to quit): "
     hFlush stdout
     input <- getLine
-    if input == "-h"
+    let (cmd, boardSize) = filterMenuInput input
+    let board = newBoard boardSize
+    if cmd == "-h"
         then do
             putStrLn "Commands:"
-            putStrLn "\tPvP\t\t//Gamemode where two players can compete."
-            putStrLn "\tPvE\t\t//Gamemode where a player can compete with a computer."
-            putStrLn "\tEvE\t\t//Gamemode where a computer competes against a computer."
+            putStrLn "\t-h\t\t# To view all available commands."
+            putStrLn "\tPvP N\t\t# Player VS Player mode with NxN board (N needs to be larger than 1 to be valid, will default to 3 if invalid or not specified)."
+            putStrLn "\tPvE N\t\t# Player VS Computer mode with NxN board (N needs to be larger than 1 to be valid, will default to 3 if invalid or not specified)."
+            putStrLn "\tEvE N\t\t# Computer VS Computer mode with NxN board (N needs to be larger than 1 to be valid, will default to 3 if invalid or not specified)."
             menu
-        else if input == "pvp"
+        else if cmd == "pvp"
             then gameLoopPvP X board boardSize
-        else if input == "pve"
+        else if cmd == "pve"
             then gameLoopPvE X board boardSize
-        else if input == "eve"
+        else if cmd == "eve"
             then gameLoopEvE X board boardSize
         else do
             putStrLn "Unknown command... Try again.\n"
