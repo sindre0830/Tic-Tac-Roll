@@ -7,6 +7,7 @@ import Grid
 import Render
 import InputFilter
 import Transformation
+import Validation
 
 -- module Grid
 
@@ -162,6 +163,120 @@ spec_swapPieces = do
         it "swapPieces [Empty] 1                           returns [Empty]" $ do
             swapPieces [Empty] 1                           `shouldBe` [Empty]
 
+-- module Validation
+
+spec_verifyMove :: Spec
+spec_verifyMove = do
+    describe "verifyMove tests:" $ do
+        it "verifyMove 1 [Occupied X, Empty, Empty, Empty] returns False" $ do
+            verifyMove 1 [Occupied X, Empty, Empty, Empty] `shouldBe` False
+        it "verifyMove 2 [Occupied X, Empty, Empty, Empty] returns True" $ do
+            verifyMove 2 [Occupied X, Empty, Empty, Empty] `shouldBe` True
+        it "verifyMove 0 [Occupied X, Empty, Empty, Empty] returns False" $ do
+            verifyMove 0 [Occupied X, Empty, Empty, Empty] `shouldBe` False
+        it "verifyMove 5 [Occupied X, Empty, Empty, Empty] returns False" $ do
+            verifyMove 5 [Occupied X, Empty, Empty, Empty] `shouldBe` False
+        it "verifyMove 1 []                                returns False" $ do
+            verifyMove 1 []                                `shouldBe` False
+
+spec_checkRow :: Spec
+spec_checkRow = do
+    describe "checkRow tests:" $ do
+        it "checkRow [Occupied X, Empty, Empty, Empty] 2      returns (False, X)" $ do
+            checkRow [Occupied X, Empty, Empty, Empty] 2      `shouldBe` (False, X)
+        it "checkRow [Occupied X, Occupied X, Empty, Empty] 2 returns (True, X)" $ do
+            checkRow [Occupied X, Occupied X, Empty, Empty] 2 `shouldBe` (True, X)
+        it "checkRow [Occupied X] 1                           returns (True, X)" $ do
+            checkRow [Occupied X] 1                           `shouldBe` (True, X)
+        it "checkRow [] 0                                     returns (False, X)" $ do
+            checkRow [] 0                                     `shouldBe` (False, X)
+
+spec_checkColumn :: Spec
+spec_checkColumn = do
+    describe "checkColumn tests:" $ do
+        it "checkColumn [Occupied X, Empty, Empty, Empty] 2      returns (False, X)" $ do
+            checkColumn [Occupied X, Empty, Empty, Empty] 2      `shouldBe` (False, X)
+        it "checkColumn [Occupied X, Empty, Occupied X, Empty] 2 returns (True, X)" $ do
+            checkColumn [Occupied X, Empty, Occupied X, Empty] 2 `shouldBe` (True, X)
+        it "checkColumn [Occupied X] 1                           returns (True, X)" $ do
+            checkColumn [Occupied X] 1                           `shouldBe` (True, X)
+        it "checkColumn [] 0                                     returns (False, X)" $ do
+            checkColumn [] 0                                     `shouldBe` (False, X)
+
+spec_checkDiagonalL :: Spec
+spec_checkDiagonalL = do
+    describe "checkDiagonalL tests:" $ do
+        it "checkDiagonalL [Occupied X, Empty, Empty, Empty] 2      returns (False, X)" $ do
+            checkDiagonalL [Occupied X, Empty, Empty, Empty] 2      `shouldBe` (False, X)
+        it "checkDiagonalL [Occupied X, Empty, Empty, Occupied X] 2 returns (True, X)" $ do
+            checkDiagonalL [Occupied X, Empty, Empty, Occupied X] 2 `shouldBe` (True, X)
+        it "checkDiagonalL [Occupied X] 1                           returns (True, X)" $ do
+            checkDiagonalL [Occupied X] 1                           `shouldBe` (True, X)
+        it "checkDiagonalL [] 0                                     returns (False, X)" $ do
+            checkDiagonalL [] 0                                     `shouldBe` (False, X)
+
+spec_checkDiagonalR :: Spec
+spec_checkDiagonalR = do
+    describe "checkDiagonalR tests:" $ do
+        it "checkDiagonalR [Occupied X, Empty, Empty, Empty] 2      returns (False, X)" $ do
+            checkDiagonalR [Occupied X, Empty, Empty, Empty] 2      `shouldBe` (False, X)
+        it "checkDiagonalR [Empty, Occupied X, Occupied X, Empty] 2 returns (True, X)" $ do
+            checkDiagonalR [Empty, Occupied X, Occupied X, Empty] 2 `shouldBe` (True, X)
+        it "checkDiagonalR [Occupied X] 1                           returns (True, X)" $ do
+            checkDiagonalR [Occupied X] 1                           `shouldBe` (True, X)
+        it "checkDiagonalR [] 0                                     returns (False, X)" $ do
+            checkDiagonalR [] 0                                     `shouldBe` (False, X)
+
+spec_verifyBoard :: Spec
+spec_verifyBoard = do
+    describe "verifyBoard tests:" $ do
+        it "verifyBoard [Occupied X, Empty, Empty, Empty] 2      returns (False, '')" $ do
+            verifyBoard [Occupied X, Empty, Empty, Empty] 2      `shouldBe` (False, "")
+        it "verifyBoard [Occupied X, Occupied X, Empty, Empty] 2 returns (True, 'X won!')" $ do
+            verifyBoard [Occupied X, Occupied X, Empty, Empty] 2 `shouldBe` (True, "X won!")
+        it "verifyBoard [Occupied X, Empty, Occupied X, Empty] 2 returns (True, 'X won!')" $ do
+            verifyBoard [Occupied X, Empty, Occupied X, Empty] 2 `shouldBe` (True, "X won!")
+        it "verifyBoard [Occupied X, Empty, Empty, Occupied X] 2 returns (True, 'X won!')" $ do
+            verifyBoard [Occupied X, Empty, Empty, Occupied X] 2 `shouldBe` (True, "X won!")
+        it "verifyBoard [Empty, Occupied X, Occupied X, Empty] 2 returns (True, 'X won!')" $ do
+            verifyBoard [Empty, Occupied X, Occupied X, Empty] 2 `shouldBe` (True, "X won!")
+        it "verifyBoard [Occupied X] 1                           returns (True, 'X won!')" $ do
+            verifyBoard [Occupied X] 1                           `shouldBe` (True, "X won!")
+        it "verifyBoard [] 0                                     returns (True, 'It's a tie!')" $ do
+            verifyBoard [] 0                                     `shouldBe` (True, "It's a tie!")
+
+spec_takeNth :: Spec
+spec_takeNth = do
+    describe "takeNth tests:" $ do
+        it "takeNth 2 [1..4] returns [2, 4]" $ do
+            takeNth 2 [1..4] `shouldBe` [2, 4]
+        it "takeNth 3 [1..4] returns [3]" $ do
+            takeNth 3 [1..4] `shouldBe` [3]
+        it "takeNth 1 [1..4] returns [1..4]" $ do
+            takeNth 1 [1..4] `shouldBe` [1..4]
+        it "takeNth 0 [1..4] returns []" $ do
+            takeNth 0 [1..4] `shouldBe` []
+        it "takeNth 1 [1] returns [1]" $ do
+            takeNth 1 [1] `shouldBe` [1]
+        it "takeNth (-2) [1..4] returns []" $ do
+            takeNth (-2) [1..4] `shouldBe` []
+
+spec_dropNth :: Spec
+spec_dropNth = do
+    describe "dropNth tests:" $ do
+        it "dropNth 2 [1..4] returns [1, 3]" $ do
+            dropNth 2 [1..4] `shouldBe` [1, 3]
+        it "dropNth 3 [1..4] returns [1, 2, 4]" $ do
+            dropNth 3 [1..4] `shouldBe` [1, 2, 4]
+        it "dropNth 1 [1..4] returns []" $ do
+            dropNth 1 [1..4] `shouldBe` []
+        it "dropNth 0 [1..4] returns [1..4]" $ do
+            dropNth 0 [1..4] `shouldBe` [1..4]
+        it "dropNth 1 [1] returns []" $ do
+            dropNth 1 [1] `shouldBe` []
+        it "dropNth (-2) [1..4] returns [1..4]" $ do
+            dropNth (-2) [1..4] `shouldBe` [1..4]
+
 main :: IO ()
 main = do
     hspec $ do
@@ -182,3 +297,12 @@ main = do
         spec_listToMatrix
         spec_rotateBoard
         spec_swapPieces
+        -- Validation
+        spec_verifyMove
+        spec_checkRow
+        spec_checkColumn
+        spec_checkDiagonalL
+        spec_checkDiagonalR
+        spec_verifyBoard
+        spec_takeNth
+        spec_dropNth

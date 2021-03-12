@@ -92,4 +92,6 @@
 
 [1.28.0] development: Added handling of edge cases in Validation module
 
+[1.29.0] testing: Added testing to Validation module
+
 ## Unreleased changes
