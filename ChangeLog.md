@@ -84,4 +84,6 @@
 
 [1.24.0] development: Added condition in rotateL to return empty Matrix if input is empty
 
+[1.25.0] development: Added condition in listToMatrix to return empty Matrix if input is empty
+
 ## Unreleased changes

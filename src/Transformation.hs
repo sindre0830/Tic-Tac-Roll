@@ -15,6 +15,7 @@ rotateR :: Matrix -> Matrix
 rotateR matrix = rotateL $ rotateL $ rotateL matrix
 
 listToMatrix :: Board -> Size -> Matrix
+listToMatrix _ 0 = [[]]
 listToMatrix [] _ = []
 listToMatrix arr boardSize = take boardSize arr : listToMatrix (drop boardSize arr) boardSize
 
