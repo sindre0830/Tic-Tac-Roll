@@ -70,4 +70,6 @@
 
 [1.18.0] development: Changed updateBoard to not modify board if position is out of scope
 
+[1.19.0] testing: Added testing to Grid module
+
 ## Unreleased changes
