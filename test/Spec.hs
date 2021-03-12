@@ -6,6 +6,7 @@ import Dictionary
 import Grid
 import Render
 import InputFilter
+import Transformation
 
 -- module Grid
 
@@ -107,6 +108,60 @@ spec_filterGameInput = do
         it "filterGameInput 'abc'      returns (0, '')" $ do
             filterGameInput "abc"      `shouldBe` (0, "")
 
+-- module Transformation
+
+spec_rotateL :: Spec
+spec_rotateL = do
+    describe "rotateL tests:" $ do
+        it "rotateL [[Occupied X, Empty], [Empty, Empty]] returns [[Empty, Empty], [Occupied X, Empty]]" $ do
+            rotateL [[Occupied X, Empty], [Empty, Empty]] `shouldBe` [[Empty, Empty], [Occupied X, Empty]]
+        it "rotateL [[Empty, Empty], [Empty, Occupied X]] returns [[Empty, Occupied X], [Empty, Empty]]" $ do
+            rotateL [[Empty, Empty], [Empty, Occupied X]] `shouldBe` [[Empty, Occupied X], [Empty, Empty]]
+        it "rotateL [[Occupied X]]                        returns [[Occupied X]]" $ do
+            rotateL [[Occupied X]]                        `shouldBe` [[Occupied X]]
+        it "rotateL [[]]                                  returns [[]]" $ do
+            rotateL [[]]                                  `shouldBe` [[]]
+            
+spec_rotateR :: Spec
+spec_rotateR = do
+    describe "rotateR tests:" $ do
+        it "rotateR [[Occupied X, Empty], [Empty, Empty]] returns [[Empty, Occupied X], [Empty, Empty]]" $ do
+            rotateR [[Occupied X, Empty], [Empty, Empty]] `shouldBe` [[Empty, Occupied X], [Empty, Empty]]
+        it "rotateR [[Empty, Empty], [Empty, Occupied X]] returns [[Empty, Empty], [Occupied X, Empty]]" $ do
+            rotateR [[Empty, Empty], [Empty, Occupied X]] `shouldBe` [[Empty, Empty], [Occupied X, Empty]]
+        it "rotateR [[Occupied X]]                        returns [[Occupied X]]" $ do
+            rotateR [[Occupied X]]                        `shouldBe` [[Occupied X]]
+        it "rotateR [[]]                                  returns [[]]" $ do
+            rotateR [[]]                                  `shouldBe` [[]]
+
+spec_listToMatrix :: Spec
+spec_listToMatrix = do
+    describe "listToMatrix tests:" $ do
+        it "listToMatrix [Occupied X, Empty, Occupied O, Occupied O] 2 returns [[Occupied X, Empty], [Occupied O, Occupied O]]" $ do
+            listToMatrix [Occupied X, Empty, Occupied O, Occupied O] 2 `shouldBe` [[Occupied X, Empty], [Occupied O, Occupied O]]
+        it "listToMatrix [] 0                                          returns [[]]" $ do
+            listToMatrix [] 0                                          `shouldBe` [[]]
+
+spec_rotateBoard :: Spec
+spec_rotateBoard = do
+    describe "rotateBoard tests:" $ do
+        it "rotateBoard [Occupied X, Empty, Empty, Empty] 2 'left'  returns [Occupied X, Empty, Empty, Empty]" $ do
+            rotateBoard [Occupied X, Empty, Empty, Empty] 2 "left"  `shouldBe` [Occupied X, Empty, Empty, Empty]
+        it "rotateBoard [Occupied X, Empty, Empty, Empty] 2 'right' returns [Empty, Empty, Empty, Occupied X]" $ do
+            rotateBoard [Occupied X, Empty, Empty, Empty] 2 "right" `shouldBe` [Empty, Empty, Empty, Occupied X]
+        it "rotateBoard [] 0 'right'                                returns []" $ do
+            rotateBoard [] 0 "right"                                `shouldBe` []
+
+spec_swapPieces :: Spec
+spec_swapPieces = do
+    describe "swapPieces tests:" $ do
+        it "swapPieces [Occupied X, Empty, Empty, Empty] 2 returns [Empty, Occupied X, Empty, Empty]" $ do
+            swapPieces [Occupied X, Empty, Empty, Empty] 2 `shouldBe` [Empty, Occupied X, Empty, Empty]
+        it "swapPieces [] 0                                returns []" $ do
+            swapPieces [] 0                                `shouldBe` []
+        it "swapPieces [Empty] 1                           returns [Empty]" $ do
+            swapPieces [Empty] 1                           `shouldBe` [Empty]
+
 main :: IO ()
 main = do
     hspec $ do
@@ -121,3 +176,9 @@ main = do
         -- InputFilter
         spec_stringToLower
         spec_filterGameInput
+        -- Transformation
+        spec_rotateL
+        spec_rotateR
+        spec_listToMatrix
+        spec_rotateBoard
+        spec_swapPieces

@@ -88,4 +88,6 @@
 
 [1.26.0] development: Added condition in swapPieces to do nothing if swapping isn't possible
 
+[1.27.0] testing: Added testing to Transformation module
+
 ## Unreleased changes
