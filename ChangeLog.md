@@ -90,4 +90,6 @@
 
 [1.27.0] testing: Added testing to Transformation module
 
+[1.28.0] development: Added handling of edge cases in Validation module
+
 ## Unreleased changes
