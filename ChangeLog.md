@@ -74,4 +74,6 @@
 
 [1.19.1] formatting: Added indentation in testing description for readability
 
+[1.20.0] development: Added condition in dividingLine if size is less then 1
+
 ## Unreleased changes

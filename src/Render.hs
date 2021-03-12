@@ -11,7 +11,9 @@ renderRow :: Board -> String
 renderRow row = intercalate " | " $ fmap show row
 
 dividingLine :: Size -> String
-dividingLine boardSize = mappend "-" (replicate (4 * (boardSize - 1)) '-')
+dividingLine boardSize
+    | boardSize < 1 = ""
+    | otherwise     = mappend "-" (replicate (4 * (boardSize - 1)) '-')
 
 renderBoard :: Board -> Size -> IO ()
 renderBoard [] _ = putStrLn ""
