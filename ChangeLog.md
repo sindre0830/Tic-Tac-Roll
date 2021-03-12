@@ -62,4 +62,6 @@
 
 [1.16.0] development: Added spec testing on switchMark and renderRow
 
+[1.16.1] setup: Split Lib module into multiple modules for readability
+
 ## Unreleased changes

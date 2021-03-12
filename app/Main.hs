@@ -1,6 +1,6 @@
 module Main where
 
-import Lib ( menu )
+import GameModes ( menu )
 
 main :: IO ()
 main = menu

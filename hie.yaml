@@ -5,5 +5,12 @@ cradle:
         cradle:
           stack:
             - path: "./app/Main.hs"
-            - path: "./src/Lib.hs"
+            - path: "./src/AI.hs"
+            - path: "./src/Dictionary.hs"
+            - path: "./src/Grid.hs"
+            - path: "./src/InputFilter.hs"
+            - path: "./src/GameModes.hs"
+            - path: "./src/Render.hs"
+            - path: "./src/Transformation.hs"
+            - path: "./src/Validation.hs"
             - path: "./test/Spec.hs"

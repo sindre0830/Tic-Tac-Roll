@@ -1,16 +1,16 @@
-import Test.HUnit(Test(TestCase, TestList, TestLabel), assertEqual, runTestTT)
-import Test.QuickCheck(quickCheckAll)
-import Test.Hspec(Spec, hspec, describe, shouldBe, it)
-import Test.Hspec.QuickCheck(prop)
-import Lib
+import Test.Hspec ( hspec, Spec, shouldBe, it, describe )
+
+import Dictionary
+import Grid
+import Render
 
 spec_switchMark :: Spec
 spec_switchMark = do
-  describe "switchMark tests" $ do
-	  it "switchMark O returns X" $ do
-		switchMark O `shouldBe` X
-	  it "switchMark X returns O" $ do
-		switchMark X `shouldBe` O
+	describe "switchMark tests" $ do
+		it "switchMark O returns X" $ do
+			switchMark O `shouldBe` X
+		it "switchMark X returns O" $ do
+			switchMark X `shouldBe` O
 
 spec_renderRow :: Spec
 spec_renderRow = do
