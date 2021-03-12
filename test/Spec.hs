@@ -1,15 +1,14 @@
+-- foreign modules
 import Test.Hspec ( Spec, hspec, shouldBe, it, describe )
-import Test.Hspec.QuickCheck( prop )
-
+-- local modules
 import Dictionary
-
 import Grid
 import Render
 import InputFilter
 import Transformation
 import Validation
 import AI
-
+-- | Main testing program.
 main :: IO ()
 main = do
     hspec $ do

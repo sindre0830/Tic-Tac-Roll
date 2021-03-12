@@ -2,17 +2,17 @@ module GameModes
     ( 
     module GameModes
     ) where
-
+-- foreign modules
 import System.Random ( newStdGen )
 import System.IO ( hFlush, stdout )
-
+-- local modules
 import Dictionary ( Board, Mark(X), Size )
 import Render ( renderFrame )
 import Validation ( verifyMove, verifyBoard )
 import AI ( entityAI )
 import Grid ( switchMark, newBoard, getNewBoard )
 import InputFilter ( filterMenuInput, filterGameInput )
-
+-- | Get user input and execute valid commands.
 menu :: IO ()
 menu = do
     putStr "Input command (-h for help and ctrl-c to quit): "
@@ -37,7 +37,7 @@ menu = do
         else do
             putStrLn "Unknown command... Try again.\n"
             menu
-
+-- | Player vs Player gameloop.
 gameLoopPvP :: Mark -> Board -> Size -> IO ()
 gameLoopPvP mark board boardSize = do
     renderFrame board boardSize ("Player " ++ show mark ++ ": ")
@@ -55,7 +55,7 @@ gameLoopPvP mark board boardSize = do
         else do
             putStrLn "Invalid move, try again..."
             gameLoopPvP mark board boardSize
-
+-- | Player vs Entity gameloop.
 gameLoopPvE :: Mark -> Board -> Size -> IO ()
 gameLoopPvE mark board boardSize = do
     renderFrame board boardSize ("Player " ++ show mark ++ ": ")
@@ -83,7 +83,7 @@ gameLoopPvE mark board boardSize = do
         else do
             putStrLn "Invalid move, try again..."
             gameLoopPvE mark board boardSize
-
+-- | Entity vs Entity gameloop.
 gameLoopEvE :: Mark -> Board -> Size -> IO ()
 gameLoopEvE mark board boardSize = do
     renderFrame board boardSize ("Player " ++ show mark ++ ": ")

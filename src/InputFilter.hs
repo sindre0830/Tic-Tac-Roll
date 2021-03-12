@@ -2,13 +2,13 @@ module InputFilter
     ( 
     module InputFilter
     ) where
-        
+-- foreign modules
 import Data.Char ( toLower )
 import Text.Read ( readMaybe )
 import Data.Maybe ( fromJust, isJust )
-
+-- local modules
 import Dictionary ( Input, Position, Direction, Size )
-
+-- | Filters menu input into command and valid boardSize.
 filterMenuInput :: Input -> (String, Size)
 filterMenuInput input
     | input == "" = ("", 0)
@@ -25,8 +25,7 @@ filterMenuInput input
                             else (cmd, 3)
                     else (cmd, 3)
             else (cmd, 3)
-
-
+-- | Filters game input into valid position and direction.
 filterGameInput :: Input -> (Position, Direction)
 filterGameInput inpStr
     | inpStr == "" = (0, "")
@@ -38,6 +37,6 @@ filterGameInput inpStr
                 then (fromJust pos, arrInp !! 1)
                 else (fromJust pos, "")
             else (0, "")
-
+-- | Converts string to lowercase.
 stringToLower :: String -> String
 stringToLower = map toLower

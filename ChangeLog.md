@@ -100,4 +100,6 @@
 
 [1.31.0] development: Changed boardSize to be user specified
 
+[1.31.1] formatting: Added function headers
+
 ## Unreleased changes
