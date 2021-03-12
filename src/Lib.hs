@@ -212,14 +212,14 @@ getRndIndex arrSize rndSeed = do
 	let (rndIndex, _) = randomR (0, arrSize - 1) rndSeed :: (Index, StdGen)
 	rndIndex
 
-entityAI :: Board -> StdGen -> (Board, Output)
-entityAI board rndSeed = do
+entityAI :: Board -> Mark -> StdGen -> (Board, Output)
+entityAI board mark rndSeed = do
 	let boardIndex = zip board [1..(length board)]
 	let arrIndex = map snd (removeOccupied boardIndex)
 	let pos = arrIndex !! getRndIndex (length arrIndex) rndSeed
 	let arrDir = ["left", "right", ""]
 	let dir = arrDir !! getRndIndex (length arrDir) rndSeed
-	let newBoard = getNewBoard board pos O dir
+	let newBoard = getNewBoard board pos mark dir
 	(newBoard, show pos ++ " " ++ dir)
 
 gameLoopPvE :: Mark -> Board -> IO ()
@@ -237,7 +237,7 @@ gameLoopPvE mark board = do
 					renderFrame newBoard msg
 				else do
 					rndSeed <- newStdGen
-					let (tempBoard, entityMove) = entityAI newBoard rndSeed
+					let (tempBoard, entityMove) = entityAI newBoard (switchMark mark) rndSeed
 					putStrLn ("Player O: " ++ entityMove)
 					putStrLn ""
 					let (gameover, msg) = verifyBoard tempBoard
@@ -250,6 +250,20 @@ gameLoopPvE mark board = do
 			putStrLn "Invalid move, try again..."
 			gameLoopPvE mark board	
 
+gameLoopEvE :: Mark -> Board -> IO ()
+gameLoopEvE mark board = do
+	renderFrame board ("Player " ++ show mark ++ ": ")
+	rndSeed <- newStdGen
+	let (newBoard, entityMove) = entityAI board mark rndSeed
+	putStr entityMove
+	putStrLn "\n"
+	let (gameover, msg) = verifyBoard newBoard
+	if gameover
+		then do
+			renderFrame newBoard msg
+		else do
+			gameLoopEvE (switchMark mark) newBoard
+
 menu :: IO ()
 menu = do
 	let board = newBoard
@@ -261,11 +275,14 @@ menu = do
 			putStrLn "Commands:"
 			putStrLn "\tPvP\t\t//Gamemode where two players can compete."
 			putStrLn "\tPvE\t\t//Gamemode where a player can compete with a computer."
+			putStrLn "\tEvE\t\t//Gamemode where a computer competes against a computer."
 			menu
 		else if input == "pvp"
 			then gameLoopPvP X board
 		else if input == "pve"
 			then gameLoopPvE X board
+		else if input == "eve"
+			then gameLoopEvE X board
 		else do
 			putStrLn "Unknown command... Try again.\n"
 			menu

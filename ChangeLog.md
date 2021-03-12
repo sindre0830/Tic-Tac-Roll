@@ -58,4 +58,6 @@
 
 [1.14.0] development: Added menu for choosing gamemodes
 
+[1.15.0] development: Added EvE gamemode
+
 ## Unreleased changes
