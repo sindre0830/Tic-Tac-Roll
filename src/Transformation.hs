@@ -26,6 +26,8 @@ rotateBoard board boardSize dir = do
         else concat $ rotateR $ listToMatrix (swapPieces board boardSize) boardSize
 
 swapPieces :: Board -> Size -> Board
-swapPieces (x:xs) boardSize = do
-    let top = take (boardSize - 1) xs
-    ((last top : init top) ++ [x]) ++ drop (boardSize - 1) xs
+swapPieces board boardSize
+    | boardSize < 2 = board
+    | otherwise     = do
+        let top = take (boardSize - 1) (tail board)
+        ((last top : init top) ++ [head board]) ++ drop (boardSize - 1) (tail board)

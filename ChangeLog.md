@@ -86,4 +86,6 @@
 
 [1.25.0] development: Added condition in listToMatrix to return empty Matrix if input is empty
 
+[1.26.0] development: Added condition in swapPieces to do nothing if swapping isn't possible
+
 ## Unreleased changes
