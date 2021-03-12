@@ -4,10 +4,10 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 67cf164d73308146ffc714513822265d75fdeb56bc86cc7af882058d52df7d0a
+-- hash: 5c5cc3cf178e07c541ce96a5c5e3d07689e57328b70951d472d27a7eef9aeb57
 
 name:           assignment-one
-version:        1.17.1
+version:        1.18.0
 description:    Please see the README on GitHub at <https://git.gvk.idi.ntnu.no/course/prog2006/as/sindre0830/assignment-one#readme>
 homepage:       https://github.com/https://git.gvk.idi.ntnu.no/course/prog2006/as/sindre0830/assignment-one#readme
 bug-reports:    https://github.com/https://git.gvk.idi.ntnu.no/course/prog2006/as/sindre0830/assignment-one/issues
@@ -65,7 +65,8 @@ test-suite assignment-one-test
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      assignment-one
+      QuickCheck
+    , assignment-one
     , base >=4.7 && <5
     , hspec
   default-language: Haskell2010

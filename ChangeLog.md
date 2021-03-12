@@ -60,12 +60,14 @@
 
 [1.15.0] development: Added EvE gamemode
 
-[1.16.0] development: Added spec testing on switchMark and renderRow
+[1.16.0] testing: Added spec testing on switchMark and renderRow
 
 [1.16.1] setup: Split Lib module into multiple modules for readability
 
 [1.17.0] development: Changed boardSize from function to parameter
 
 [1.17.1] formatting: Converted from tabs to spaces (heresy)
+
+[1.18.0] development: Changed updateBoard to not modify board if position is out of scope
 
 ## Unreleased changes
