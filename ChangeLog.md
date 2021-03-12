@@ -66,4 +66,6 @@
 
 [1.17.0] development: Changed boardSize from function to parameter
 
+[1.17.1] formatting: Converted from tabs to spaces (heresy)
+
 ## Unreleased changes

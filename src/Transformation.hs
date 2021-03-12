@@ -1,7 +1,7 @@
 module Transformation
-	( 
-	module Transformation
-	) where
+    ( 
+    module Transformation
+    ) where
 
 import Data.List ( transpose )
 
@@ -19,11 +19,11 @@ listToMatrix arr boardSize = take boardSize arr : listToMatrix (drop boardSize a
 
 rotateBoard :: Board -> Size -> Direction -> Board
 rotateBoard board boardSize dir = do
-	if dir == "left"
-		then concat $ rotateL $ listToMatrix (swapPieces board boardSize) boardSize
-		else concat $ rotateR $ listToMatrix (swapPieces board boardSize) boardSize
+    if dir == "left"
+        then concat $ rotateL $ listToMatrix (swapPieces board boardSize) boardSize
+        else concat $ rotateR $ listToMatrix (swapPieces board boardSize) boardSize
 
 swapPieces :: Board -> Size -> Board
 swapPieces (x:xs) boardSize = do
-	let top = take (boardSize - 1) xs
-	((last top : init top) ++ [x]) ++ drop (boardSize - 1) xs
+    let top = take (boardSize - 1) xs
+    ((last top : init top) ++ [x]) ++ drop (boardSize - 1) xs

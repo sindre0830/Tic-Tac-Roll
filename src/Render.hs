@@ -1,7 +1,7 @@
 module Render
-	( 
-	module Render
-	) where
+    ( 
+    module Render
+    ) where
 
 import System.IO ( hFlush, stdout )
 import Data.List ( intercalate )
@@ -16,15 +16,15 @@ dividingLine boardSize = mappend "-" (replicate (4 * (boardSize - 1)) '-')
 renderBoard :: Board -> Size -> IO ()
 renderBoard [] _ = putStrLn ""
 renderBoard board boardSize = do
-	let row = take boardSize board
-	putStrLn $ renderRow row
-	if length board > boardSize 
-		then putStrLn (dividingLine boardSize)
-		else pure ()
-	renderBoard (drop boardSize board) boardSize
+    let row = take boardSize board
+    putStrLn $ renderRow row
+    if length board > boardSize 
+        then putStrLn (dividingLine boardSize)
+        else pure ()
+    renderBoard (drop boardSize board) boardSize
 
 renderFrame :: Board -> Size -> Output -> IO ()
 renderFrame board boardSize msg = do
-	renderBoard board boardSize
-	putStr msg
-	hFlush stdout
+    renderBoard board boardSize
+    putStr msg
+    hFlush stdout

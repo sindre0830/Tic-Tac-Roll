@@ -1,7 +1,7 @@
 module Grid
-	( 
-	module Grid
-	) where
+    ( 
+    module Grid
+    ) where
 
 import Dictionary
     ( Board, Position, Direction, Cell(..), Mark(..), Size)
@@ -22,7 +22,7 @@ updateBoard xs i e = case splitAt (i - 1) xs of
 
 getNewBoard :: Board -> Size -> Position -> Mark -> Direction -> Board
 getNewBoard board boardSize pos mark dir = do
-	let newBoard = updateBoard board pos (Occupied mark)
-	if dir /= ""
-		then rotateBoard newBoard boardSize dir
-		else newBoard
+    let newBoard = updateBoard board pos (Occupied mark)
+    if dir /= ""
+        then rotateBoard newBoard boardSize dir
+        else newBoard
