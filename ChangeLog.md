@@ -94,4 +94,6 @@
 
 [1.29.0] testing: Added testing to Validation module
 
+[1.30.0] testing: Added testing to AI module
+
 ## Unreleased changes

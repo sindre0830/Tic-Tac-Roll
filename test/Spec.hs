@@ -8,6 +8,7 @@ import Render
 import InputFilter
 import Transformation
 import Validation
+import AI
 
 -- module Grid
 
@@ -277,6 +278,20 @@ spec_dropNth = do
         it "dropNth (-2) [1..4] returns [1..4]" $ do
             dropNth (-2) [1..4] `shouldBe` [1..4]
 
+-- module AI
+
+spec_removeOccupied :: Spec
+spec_removeOccupied = do
+    describe "removeOccupied tests:" $ do
+        it "removeOccupied [(Occupied X, 1), (Occupied O, 2), (Empty, 3), (Occupied O, 4), (Empty, 5)] returns [(Empty, 3), (Empty, 5)]" $ do
+            removeOccupied [(Occupied X, 1), (Occupied O, 2), (Empty, 3), (Occupied O, 4), (Empty, 5)] `shouldBe` [(Empty, 3), (Empty, 5)]
+        it "removeOccupied []                                                                          returns []" $ do
+            removeOccupied []                                                                          `shouldBe` []
+        it "removeOccupied [(Occupied X, 1)]                                                           returns []" $ do
+            removeOccupied [(Occupied X, 1)]                                                           `shouldBe` []
+        it "removeOccupied [(Empty, 1)]                                                                returns [(Empty, 1)]" $ do
+            removeOccupied [(Empty, 1)]                                                                `shouldBe` [(Empty, 1)]
+
 main :: IO ()
 main = do
     hspec $ do
@@ -306,3 +321,5 @@ main = do
         spec_verifyBoard
         spec_takeNth
         spec_dropNth
+        -- AI
+        spec_removeOccupied
