@@ -70,6 +70,16 @@ spec_renderRow = do
         it "renderRow []                                   returns ''" $ do
             renderRow []                                   `shouldBe` ""
 
+spec_dividingLine :: Spec
+spec_dividingLine = do
+    describe "dividingLine tests:" $ do
+        it "dividingLine 3    returns '---------'" $ do
+            dividingLine 3    `shouldBe` "---------"
+        it "dividingLine 0    returns ''" $ do
+            dividingLine 0    `shouldBe` ""
+        it "dividingLine (-3) returns ''" $ do
+            dividingLine (-3) `shouldBe` ""
+
 main :: IO ()
 main = do
     hspec $ do
@@ -80,3 +90,4 @@ main = do
         spec_getNewBoard
         -- Render
         spec_renderRow
+        spec_dividingLine

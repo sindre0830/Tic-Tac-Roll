@@ -76,4 +76,6 @@
 
 [1.20.0] development: Added condition in dividingLine if size is less then 1
 
+[1.21.0] testing: Added testing to Render module
+
 ## Unreleased changes
