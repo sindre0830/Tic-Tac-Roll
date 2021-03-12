@@ -14,6 +14,7 @@ type Matrix = [[Cell]]
 type Gameover = Bool
 type Input = String
 type Output = String
+type Command = String
 -- define instances for custom data types
 instance Show Mark where
     show X = "X"

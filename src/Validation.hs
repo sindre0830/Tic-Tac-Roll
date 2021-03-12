@@ -17,7 +17,7 @@ verifyMove :: Position -> Board -> Bool
 verifyMove pos board
     | pos < 1            = False
     | pos > length board = False
-    | otherwise          = board!!(pos - 1) == Empty
+    | otherwise          = board !! (pos - 1) == Empty
 -- | Checks if game is over and outputs statement.
 verifyBoard :: Board -> Size -> (Gameover, Output)
 verifyBoard board boardSize = do
@@ -37,6 +37,7 @@ verifyBoard board boardSize = do
                             if flag
                                 then (True, show mark ++ " won!")
                                 else do
+                                    -- Check if the entire board is occupied
                                     if Empty `notElem` board
                                         then (True, "It's a tie!")
                                         else (False, "")
@@ -64,10 +65,10 @@ checkDiagonalL board boardSize
 -- | Checks if game is over based on right diagonal.
 checkDiagonalR :: Board -> Size -> (Gameover, Mark)
 checkDiagonalR board boardSize
-    | null board                                                                                                     = (False, X)
-    | all (== Occupied X) (take boardSize (board!!(boardSize - 1) : takeNth (boardSize - 1) (drop boardSize board))) = (True, X)
-    | all (== Occupied O) (take boardSize (board!!(boardSize - 1) : takeNth (boardSize - 1) (drop boardSize board))) = (True, O)
-    | otherwise                                                                                                      = (False, X)
+    | null board                                                                                                       = (False, X)
+    | all (== Occupied X) (take boardSize (board !! (boardSize - 1) : takeNth (boardSize - 1) (drop boardSize board))) = (True, X)
+    | all (== Occupied O) (take boardSize (board !! (boardSize - 1) : takeNth (boardSize - 1) (drop boardSize board))) = (True, O)
+    | otherwise                                                                                                        = (False, X)
 -- | Takes every Nth element from a list.
 -- Source: https://stackoverflow.com/a/2028218
 takeNth :: Int -> [a] -> [a]

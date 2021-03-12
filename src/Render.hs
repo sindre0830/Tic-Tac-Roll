@@ -21,6 +21,7 @@ renderBoard board boardSize = do
     putStrLn $ renderRow row
     if length board > boardSize 
         then putStrLn (dividingLine boardSize)
+        -- ignores else condition
         else pure ()
     renderBoard (drop boardSize board) boardSize
 -- | Generate fancy row for board rendering.
@@ -30,4 +31,4 @@ renderRow row = intercalate " | " $ fmap show row
 dividingLine :: Size -> String
 dividingLine boardSize
     | boardSize < 1 = ""
-    | otherwise     = mappend "-" (replicate (4 * (boardSize - 1)) '-')
+    | otherwise     = '-' : replicate (4 * (boardSize - 1)) '-'

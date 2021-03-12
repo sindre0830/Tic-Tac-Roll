@@ -7,9 +7,9 @@ import Data.Char ( toLower )
 import Text.Read ( readMaybe )
 import Data.Maybe ( fromJust, isJust )
 -- local modules
-import Dictionary ( Input, Position, Direction, Size )
+import Dictionary ( Input, Position, Direction, Size, Command )
 -- | Filters menu input into command and valid boardSize.
-filterMenuInput :: Input -> (String, Size)
+filterMenuInput :: Input -> (Command, Size)
 filterMenuInput input
     | input == "" = ("", 0)
     | otherwise = do
@@ -18,11 +18,9 @@ filterMenuInput input
         if length arrInp > 1
             then do
                 let boardSize = readMaybe (arrInp !! 1) :: Maybe Size
-                if isJust boardSize
-                    then do
-                        if fromJust boardSize > 1
-                            then (cmd, fromJust boardSize)
-                            else (cmd, 3)
+                --branch if input is a valid size
+                if isJust boardSize && fromJust boardSize > 1
+                    then (cmd, fromJust boardSize)
                     else (cmd, 3)
             else (cmd, 3)
 -- | Filters game input into valid position and direction.
@@ -32,6 +30,7 @@ filterGameInput inpStr
     | otherwise = do
         let arrInp = words $ stringToLower inpStr
         let pos = readMaybe (head arrInp) :: Maybe Position
+        -- branch if input is a valid position
         if isJust pos
             then if length arrInp > 1 && ((arrInp !! 1) == "left" || (arrInp !! 1) == "right")
                 then (fromJust pos, arrInp !! 1)

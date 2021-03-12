@@ -10,8 +10,8 @@ import Grid ( getNewBoard )
 -- | Finds a valid random move and updates board.
 entityAI :: Board -> Size -> Mark -> StdGen -> (Board, Output)
 entityAI board boardSize mark rndSeed = do
-    let boardIndex = zip board [1..(length board)]
-    let arrIndex = map snd (removeOccupied boardIndex)
+    -- generate list of indexes where the cell is empty 
+    let arrIndex = map snd (removeOccupied (zip board [1..(length board)]))
     let pos = arrIndex !! getRndIndex (length arrIndex) rndSeed
     let arrDir = ["left", "right", ""]
     let dir = arrDir !! getRndIndex (length arrDir) rndSeed

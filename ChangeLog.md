@@ -102,4 +102,6 @@
 
 [1.31.1] formatting: Added function headers
 
+[1.31.2] formatting: Added comments where needed and simplified some functions
+
 ## Unreleased changes
