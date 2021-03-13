@@ -2,55 +2,61 @@
 import Test.Hspec ( Spec, hspec, shouldBe, it, describe )
 -- local modules
 import Dictionary
+import AI
 import Grid
 import Render
 import InputFilter
 import Transformation
 import Validation
-import AI
 -- | Main testing program.
 main :: IO ()
 main = do
     hspec $ do
-        -- Grid
-        spec_switchMark
+        -- module AI
+        spec_removeOccupiedCells
+        -- module Grid
         spec_genBoard
-        spec_updateCell
+        spec_switchMark
         spec_modifyBoard
-        -- Render
+        spec_updateCell
+        -- module InputFilter
+        spec_filterMenuInput
+        spec_filterGameInput
+        spec_stringToLower
+        -- module Render
         spec_genFancyRow
         spec_genFancyLine
-        -- InputFilter
-        spec_stringToLower
-        spec_filterGameInput
-        spec_filterMenuInput
-        -- Transformation
-        spec_rotateL
-        spec_rotateR
-        spec_listToMatrix
+        -- module Transformation
         spec_rotateBoard
         spec_swapPieces
-        -- Validation
+        spec_listToMatrix
+        spec_rotateL
+        spec_rotateR
+        -- module Validation
         spec_verifyMove
+        spec_checkBoard
         spec_checkRow
         spec_checkColumn
         spec_checkDiagonalL
         spec_checkDiagonalR
-        spec_checkBoard
         spec_takeEveryNth
         spec_dropEveryNth
-        -- AI
-        spec_removeOccupiedCells
+
+-- module AI
+
+spec_removeOccupiedCells :: Spec
+spec_removeOccupiedCells = do
+    describe "removeOccupiedCells tests:" $ do
+        it "removeOccupiedCells [(Occupied X, 1), (Occupied O, 2), (Empty, 3), (Occupied O, 4), (Empty, 5)] returns [(Empty, 3), (Empty, 5)]" $ do
+            removeOccupiedCells [(Occupied X, 1), (Occupied O, 2), (Empty, 3), (Occupied O, 4), (Empty, 5)] `shouldBe` [(Empty, 3), (Empty, 5)]
+        it "removeOccupiedCells []                                                                          returns []" $ do
+            removeOccupiedCells []                                                                          `shouldBe` []
+        it "removeOccupiedCells [(Occupied X, 1)]                                                           returns []" $ do
+            removeOccupiedCells [(Occupied X, 1)]                                                           `shouldBe` []
+        it "removeOccupiedCells [(Empty, 1)]                                                                returns [(Empty, 1)]" $ do
+            removeOccupiedCells [(Empty, 1)]                                                                `shouldBe` [(Empty, 1)]
 
 -- module Grid
-
-spec_switchMark :: Spec
-spec_switchMark = do
-    describe "switchMark tests:" $ do
-        it "switchMark O returns X" $ do
-            switchMark O `shouldBe` X
-        it "switchMark X returns O" $ do
-            switchMark X `shouldBe` O
 
 spec_genBoard :: Spec
 spec_genBoard = do
@@ -62,17 +68,13 @@ spec_genBoard = do
         it "genBoard (-3) returns [Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty]" $ do
             genBoard (-3) `shouldBe` [Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty]
 
-spec_updateCell :: Spec
-spec_updateCell = do
-    describe "updateCell tests:" $ do
-        it "updateCell [Empty, Empty, Empty, Empty] 1 (Occupied X)    returns [Occupied X, Empty, Empty, Empty]" $ do
-            updateCell [Empty, Empty, Empty, Empty] 1 (Occupied X)    `shouldBe` [Occupied X, Empty, Empty, Empty]
-        it "updateCell [Empty, Empty, Empty, Empty] 5 (Occupied X)    returns [Empty, Empty, Empty, Empty]" $ do
-            updateCell [Empty, Empty, Empty, Empty] 5 (Occupied X)    `shouldBe` [Empty, Empty, Empty, Empty]
-        it "updateCell [Empty, Empty, Empty, Empty] 0 (Occupied X)    returns [Empty, Empty, Empty, Empty]" $ do
-            updateCell [Empty, Empty, Empty, Empty] 0 (Occupied X)    `shouldBe` [Empty, Empty, Empty, Empty]
-        it "updateCell [Empty, Empty, Empty, Empty] (-2) (Occupied X) returns [Empty, Empty, Empty, Empty]" $ do
-            updateCell [Empty, Empty, Empty, Empty] (-2) (Occupied X) `shouldBe` [Empty, Empty, Empty, Empty]
+spec_switchMark :: Spec
+spec_switchMark = do
+    describe "switchMark tests:" $ do
+        it "switchMark O returns X" $ do
+            switchMark O `shouldBe` X
+        it "switchMark X returns O" $ do
+            switchMark X `shouldBe` O
 
 spec_modifyBoard :: Spec
 spec_modifyBoard = do
@@ -87,6 +89,60 @@ spec_modifyBoard = do
             modifyBoard [Empty, Empty, Empty, Empty] 2 6 X "right"   `shouldBe` [Empty, Empty, Empty, Empty]
         it "modifyBoard [Empty, Empty, Empty, Empty] 2 (-4) X 'left' returns [Empty Empty, Empty, Empty]" $ do
             modifyBoard [Empty, Empty, Empty, Empty] 2 (-4) X "left" `shouldBe` [Empty, Empty, Empty, Empty]
+
+spec_updateCell :: Spec
+spec_updateCell = do
+    describe "updateCell tests:" $ do
+        it "updateCell [Empty, Empty, Empty, Empty] 1 (Occupied X)    returns [Occupied X, Empty, Empty, Empty]" $ do
+            updateCell [Empty, Empty, Empty, Empty] 1 (Occupied X)    `shouldBe` [Occupied X, Empty, Empty, Empty]
+        it "updateCell [Empty, Empty, Empty, Empty] 5 (Occupied X)    returns [Empty, Empty, Empty, Empty]" $ do
+            updateCell [Empty, Empty, Empty, Empty] 5 (Occupied X)    `shouldBe` [Empty, Empty, Empty, Empty]
+        it "updateCell [Empty, Empty, Empty, Empty] 0 (Occupied X)    returns [Empty, Empty, Empty, Empty]" $ do
+            updateCell [Empty, Empty, Empty, Empty] 0 (Occupied X)    `shouldBe` [Empty, Empty, Empty, Empty]
+        it "updateCell [Empty, Empty, Empty, Empty] (-2) (Occupied X) returns [Empty, Empty, Empty, Empty]" $ do
+            updateCell [Empty, Empty, Empty, Empty] (-2) (Occupied X) `shouldBe` [Empty, Empty, Empty, Empty]
+
+-- module InputFilter
+
+spec_filterMenuInput :: Spec
+spec_filterMenuInput = do
+    describe "filterMenuInput tests:" $ do
+        it "filterMenuInput 'pvp 3'    returns ('pvp', 3)" $ do
+            filterMenuInput "pvp 3"    `shouldBe` ("pvp", 3)
+        it "filterMenuInput 'pve 3hh'  returns ('pve', 3)" $ do
+            filterMenuInput "pve 3hh"  `shouldBe` ("pve", 3)
+        it "filterMenuInput 'eve 1'    returns ('eve', 3)" $ do
+            filterMenuInput "eve 1"    `shouldBe` ("eve", 3)
+        it "filterMenuInput 'eve 6'    returns ('eve', 6)" $ do
+            filterMenuInput "eve 6"    `shouldBe` ("eve", 6)
+        it "filterMenuInput 'eve'      returns ('eve', 3)" $ do
+            filterMenuInput "eve"      `shouldBe` ("eve", 3)
+        it "filterMenuInput 'eve abxc' returns ('eve', 3)" $ do
+            filterMenuInput "eve abxc" `shouldBe` ("eve", 3)
+
+spec_filterGameInput :: Spec
+spec_filterGameInput = do
+    describe "filterGameInput tests:" $ do
+        it "filterGameInput '1 left'   returns (1, 'left')" $ do
+            filterGameInput "1 left"   `shouldBe` (1, "left")
+        it "filterGameInput '14 right' returns (14, 'right')" $ do
+            filterGameInput "14 right" `shouldBe` (14, "right")
+        it "filterGameInput '0'        returns (0, '')" $ do
+            filterGameInput "0"        `shouldBe` (0, "")
+        it "filterGameInput '4 gfdgf'  returns (4, '')" $ do
+            filterGameInput "4 gfdgf"  `shouldBe` (4, "")
+        it "filterGameInput ''         returns (0, '')" $ do
+            filterGameInput ""         `shouldBe` (0, "")
+        it "filterGameInput 'abc'      returns (0, '')" $ do
+            filterGameInput "abc"      `shouldBe` (0, "")
+
+spec_stringToLower :: Spec
+spec_stringToLower = do
+    describe "stringToLower tests:" $ do
+        it "stringToLower 'ABCabc123 aBc' returns 'abcabc123 abc'" $ do
+            stringToLower "ABCabc123 aBc" `shouldBe` "abcabc123 abc"
+        it "stringToLower ''              returns ''" $ do
+            stringToLower ""              `shouldBe` ""
 
 -- module Render
 
@@ -116,49 +172,35 @@ spec_genFancyLine = do
         it "genFancyLine (-3) returns ''" $ do
             genFancyLine (-3) `shouldBe` ""
 
--- module InputFilter
-
-spec_stringToLower :: Spec
-spec_stringToLower = do
-    describe "stringToLower tests:" $ do
-        it "stringToLower 'ABCabc123 aBc' returns 'abcabc123 abc'" $ do
-            stringToLower "ABCabc123 aBc" `shouldBe` "abcabc123 abc"
-        it "stringToLower ''              returns ''" $ do
-            stringToLower ""              `shouldBe` ""
-
-spec_filterGameInput :: Spec
-spec_filterGameInput = do
-    describe "filterGameInput tests:" $ do
-        it "filterGameInput '1 left'   returns (1, 'left')" $ do
-            filterGameInput "1 left"   `shouldBe` (1, "left")
-        it "filterGameInput '14 right' returns (14, 'right')" $ do
-            filterGameInput "14 right" `shouldBe` (14, "right")
-        it "filterGameInput '0'        returns (0, '')" $ do
-            filterGameInput "0"        `shouldBe` (0, "")
-        it "filterGameInput '4 gfdgf'  returns (4, '')" $ do
-            filterGameInput "4 gfdgf"  `shouldBe` (4, "")
-        it "filterGameInput ''         returns (0, '')" $ do
-            filterGameInput ""         `shouldBe` (0, "")
-        it "filterGameInput 'abc'      returns (0, '')" $ do
-            filterGameInput "abc"      `shouldBe` (0, "")
-
-spec_filterMenuInput :: Spec
-spec_filterMenuInput = do
-    describe "filterMenuInput tests:" $ do
-        it "filterMenuInput 'pvp 3'    returns ('pvp', 3)" $ do
-            filterMenuInput "pvp 3"    `shouldBe` ("pvp", 3)
-        it "filterMenuInput 'pve 3hh'  returns ('pve', 3)" $ do
-            filterMenuInput "pve 3hh"  `shouldBe` ("pve", 3)
-        it "filterMenuInput 'eve 1'    returns ('eve', 3)" $ do
-            filterMenuInput "eve 1"    `shouldBe` ("eve", 3)
-        it "filterMenuInput 'eve 6'    returns ('eve', 6)" $ do
-            filterMenuInput "eve 6"    `shouldBe` ("eve", 6)
-        it "filterMenuInput 'eve'      returns ('eve', 3)" $ do
-            filterMenuInput "eve"      `shouldBe` ("eve", 3)
-        it "filterMenuInput 'eve abxc' returns ('eve', 3)" $ do
-            filterMenuInput "eve abxc" `shouldBe` ("eve", 3)
-
 -- module Transformation
+
+spec_rotateBoard :: Spec
+spec_rotateBoard = do
+    describe "rotateBoard tests:" $ do
+        it "rotateBoard [Occupied X, Empty, Empty, Empty] 2 'left'  returns [Occupied X, Empty, Empty, Empty]" $ do
+            rotateBoard [Occupied X, Empty, Empty, Empty] 2 "left"  `shouldBe` [Occupied X, Empty, Empty, Empty]
+        it "rotateBoard [Occupied X, Empty, Empty, Empty] 2 'right' returns [Empty, Empty, Empty, Occupied X]" $ do
+            rotateBoard [Occupied X, Empty, Empty, Empty] 2 "right" `shouldBe` [Empty, Empty, Empty, Occupied X]
+        it "rotateBoard [] 0 'right'                                returns []" $ do
+            rotateBoard [] 0 "right"                                `shouldBe` []
+
+spec_swapPieces :: Spec
+spec_swapPieces = do
+    describe "swapPieces tests:" $ do
+        it "swapPieces [Occupied X, Empty, Empty, Empty] 2 returns [Empty, Occupied X, Empty, Empty]" $ do
+            swapPieces [Occupied X, Empty, Empty, Empty] 2 `shouldBe` [Empty, Occupied X, Empty, Empty]
+        it "swapPieces [] 0                                returns []" $ do
+            swapPieces [] 0                                `shouldBe` []
+        it "swapPieces [Empty] 1                           returns [Empty]" $ do
+            swapPieces [Empty] 1                           `shouldBe` [Empty]
+
+spec_listToMatrix :: Spec
+spec_listToMatrix = do
+    describe "listToMatrix tests:" $ do
+        it "listToMatrix [Occupied X, Empty, Occupied O, Occupied O] 2 returns [[Occupied X, Empty], [Occupied O, Occupied O]]" $ do
+            listToMatrix [Occupied X, Empty, Occupied O, Occupied O] 2 `shouldBe` [[Occupied X, Empty], [Occupied O, Occupied O]]
+        it "listToMatrix [] 0                                          returns [[]]" $ do
+            listToMatrix [] 0                                          `shouldBe` [[]]
 
 spec_rotateL :: Spec
 spec_rotateL = do
@@ -184,34 +226,6 @@ spec_rotateR = do
         it "rotateR [[]]                                  returns [[]]" $ do
             rotateR [[]]                                  `shouldBe` [[]]
 
-spec_listToMatrix :: Spec
-spec_listToMatrix = do
-    describe "listToMatrix tests:" $ do
-        it "listToMatrix [Occupied X, Empty, Occupied O, Occupied O] 2 returns [[Occupied X, Empty], [Occupied O, Occupied O]]" $ do
-            listToMatrix [Occupied X, Empty, Occupied O, Occupied O] 2 `shouldBe` [[Occupied X, Empty], [Occupied O, Occupied O]]
-        it "listToMatrix [] 0                                          returns [[]]" $ do
-            listToMatrix [] 0                                          `shouldBe` [[]]
-
-spec_rotateBoard :: Spec
-spec_rotateBoard = do
-    describe "rotateBoard tests:" $ do
-        it "rotateBoard [Occupied X, Empty, Empty, Empty] 2 'left'  returns [Occupied X, Empty, Empty, Empty]" $ do
-            rotateBoard [Occupied X, Empty, Empty, Empty] 2 "left"  `shouldBe` [Occupied X, Empty, Empty, Empty]
-        it "rotateBoard [Occupied X, Empty, Empty, Empty] 2 'right' returns [Empty, Empty, Empty, Occupied X]" $ do
-            rotateBoard [Occupied X, Empty, Empty, Empty] 2 "right" `shouldBe` [Empty, Empty, Empty, Occupied X]
-        it "rotateBoard [] 0 'right'                                returns []" $ do
-            rotateBoard [] 0 "right"                                `shouldBe` []
-
-spec_swapPieces :: Spec
-spec_swapPieces = do
-    describe "swapPieces tests:" $ do
-        it "swapPieces [Occupied X, Empty, Empty, Empty] 2 returns [Empty, Occupied X, Empty, Empty]" $ do
-            swapPieces [Occupied X, Empty, Empty, Empty] 2 `shouldBe` [Empty, Occupied X, Empty, Empty]
-        it "swapPieces [] 0                                returns []" $ do
-            swapPieces [] 0                                `shouldBe` []
-        it "swapPieces [Empty] 1                           returns [Empty]" $ do
-            swapPieces [Empty] 1                           `shouldBe` [Empty]
-
 -- module Validation
 
 spec_verifyMove :: Spec
@@ -227,6 +241,24 @@ spec_verifyMove = do
             verifyMove 5 [Occupied X, Empty, Empty, Empty] `shouldBe` False
         it "verifyMove 1 []                                returns False" $ do
             verifyMove 1 []                                `shouldBe` False
+
+spec_checkBoard :: Spec
+spec_checkBoard = do
+    describe "checkBoard tests:" $ do
+        it "checkBoard [Occupied X, Empty, Empty, Empty] 2      returns (False, '')" $ do
+            checkBoard [Occupied X, Empty, Empty, Empty] 2      `shouldBe` (False, "")
+        it "checkBoard [Occupied X, Occupied X, Empty, Empty] 2 returns (True, 'X won!')" $ do
+            checkBoard [Occupied X, Occupied X, Empty, Empty] 2 `shouldBe` (True, "X won!")
+        it "checkBoard [Occupied X, Empty, Occupied X, Empty] 2 returns (True, 'X won!')" $ do
+            checkBoard [Occupied X, Empty, Occupied X, Empty] 2 `shouldBe` (True, "X won!")
+        it "checkBoard [Occupied X, Empty, Empty, Occupied X] 2 returns (True, 'X won!')" $ do
+            checkBoard [Occupied X, Empty, Empty, Occupied X] 2 `shouldBe` (True, "X won!")
+        it "checkBoard [Empty, Occupied X, Occupied X, Empty] 2 returns (True, 'X won!')" $ do
+            checkBoard [Empty, Occupied X, Occupied X, Empty] 2 `shouldBe` (True, "X won!")
+        it "checkBoard [Occupied X] 1                           returns (True, 'X won!')" $ do
+            checkBoard [Occupied X] 1                           `shouldBe` (True, "X won!")
+        it "checkBoard [] 0                                     returns (True, 'It's a tie!')" $ do
+            checkBoard [] 0                                     `shouldBe` (True, "It's a tie!")
 
 spec_checkRow :: Spec
 spec_checkRow = do
@@ -276,24 +308,6 @@ spec_checkDiagonalR = do
         it "checkDiagonalR [] 0                                     returns (False, X)" $ do
             checkDiagonalR [] 0                                     `shouldBe` (False, X)
 
-spec_checkBoard :: Spec
-spec_checkBoard = do
-    describe "checkBoard tests:" $ do
-        it "checkBoard [Occupied X, Empty, Empty, Empty] 2      returns (False, '')" $ do
-            checkBoard [Occupied X, Empty, Empty, Empty] 2      `shouldBe` (False, "")
-        it "checkBoard [Occupied X, Occupied X, Empty, Empty] 2 returns (True, 'X won!')" $ do
-            checkBoard [Occupied X, Occupied X, Empty, Empty] 2 `shouldBe` (True, "X won!")
-        it "checkBoard [Occupied X, Empty, Occupied X, Empty] 2 returns (True, 'X won!')" $ do
-            checkBoard [Occupied X, Empty, Occupied X, Empty] 2 `shouldBe` (True, "X won!")
-        it "checkBoard [Occupied X, Empty, Empty, Occupied X] 2 returns (True, 'X won!')" $ do
-            checkBoard [Occupied X, Empty, Empty, Occupied X] 2 `shouldBe` (True, "X won!")
-        it "checkBoard [Empty, Occupied X, Occupied X, Empty] 2 returns (True, 'X won!')" $ do
-            checkBoard [Empty, Occupied X, Occupied X, Empty] 2 `shouldBe` (True, "X won!")
-        it "checkBoard [Occupied X] 1                           returns (True, 'X won!')" $ do
-            checkBoard [Occupied X] 1                           `shouldBe` (True, "X won!")
-        it "checkBoard [] 0                                     returns (True, 'It's a tie!')" $ do
-            checkBoard [] 0                                     `shouldBe` (True, "It's a tie!")
-
 spec_takeEveryNth :: Spec
 spec_takeEveryNth = do
     describe "takeEveryNth tests:" $ do
@@ -325,17 +339,3 @@ spec_dropEveryNth = do
             dropEveryNth 1 [1]       `shouldBe` []
         it "dropEveryNth (-2) [1..4] returns [1..4]" $ do
             dropEveryNth (-2) [1..4] `shouldBe` [1..4]
-
--- module AI
-
-spec_removeOccupiedCells :: Spec
-spec_removeOccupiedCells = do
-    describe "removeOccupiedCells tests:" $ do
-        it "removeOccupiedCells [(Occupied X, 1), (Occupied O, 2), (Empty, 3), (Occupied O, 4), (Empty, 5)] returns [(Empty, 3), (Empty, 5)]" $ do
-            removeOccupiedCells [(Occupied X, 1), (Occupied O, 2), (Empty, 3), (Occupied O, 4), (Empty, 5)] `shouldBe` [(Empty, 3), (Empty, 5)]
-        it "removeOccupiedCells []                                                                          returns []" $ do
-            removeOccupiedCells []                                                                          `shouldBe` []
-        it "removeOccupiedCells [(Occupied X, 1)]                                                           returns []" $ do
-            removeOccupiedCells [(Occupied X, 1)]                                                           `shouldBe` []
-        it "removeOccupiedCells [(Empty, 1)]                                                                returns [(Empty, 1)]" $ do
-            removeOccupiedCells [(Empty, 1)]                                                                `shouldBe` [(Empty, 1)]

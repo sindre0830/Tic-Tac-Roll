@@ -106,4 +106,6 @@
 
 [1.31.3] formatting: Renamed modules and functions for readability
 
+[1.31.4] formatting: Changed function position for readability
+
 ## Unreleased changes

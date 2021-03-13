@@ -18,7 +18,7 @@ filterMenuInput input
         if length arrInp > 1
             then do
                 let boardSize = readMaybe (arrInp !! 1) :: Maybe Size
-                --branch if input is a valid size
+                -- branch if input is a valid size
                 if isJust boardSize && fromJust boardSize > 1
                     then (cmd, fromJust boardSize)
                     else (cmd, 3)
