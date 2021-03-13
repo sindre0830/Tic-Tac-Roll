@@ -108,4 +108,6 @@
 
 [1.31.4] formatting: Changed function position for readability
 
+[1.31.5] formatting: Updated README
+
 ## Unreleased changes
