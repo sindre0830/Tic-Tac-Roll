@@ -9,7 +9,7 @@ cradle:
             - path: "./src/Dictionary.hs"
             - path: "./src/Grid.hs"
             - path: "./src/InputFilter.hs"
-            - path: "./src/GameModes.hs"
+            - path: "./src/UI.hs"
             - path: "./src/Render.hs"
             - path: "./src/Transformation.hs"
             - path: "./src/Validation.hs"

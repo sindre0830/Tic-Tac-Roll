@@ -4,10 +4,10 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 47a64480abc5e2af8a3841518d551c4339106fb6e53a1f1c6f2a3bf9d4a4abf4
+-- hash: 0a29da4630bfc0c169912cebe0de784110f54c5cf31cccc11108d78d66a2ae92
 
 name:           assignment-one
-version:        1.31.2
+version:        1.31.3
 description:    Please see the README on GitHub at <https://git.gvk.idi.ntnu.no/course/prog2006/as/sindre0830/assignment-one#readme>
 homepage:       https://github.com/https://git.gvk.idi.ntnu.no/course/prog2006/as/sindre0830/assignment-one#readme
 bug-reports:    https://github.com/https://git.gvk.idi.ntnu.no/course/prog2006/as/sindre0830/assignment-one/issues
@@ -29,11 +29,11 @@ library
   exposed-modules:
       AI
       Dictionary
-      GameModes
       Grid
       InputFilter
       Render
       Transformation
+      UI
       Validation
   other-modules:
       Paths_assignment_one

@@ -12,15 +12,15 @@ import Dictionary
       Mark(..),
       Size
     )
--- | Checks if move is legal.
+-- | Verifies move.
 verifyMove :: Position -> Board -> Bool
 verifyMove pos board
     | pos < 1            = False
     | pos > length board = False
     | otherwise          = board !! (pos - 1) == Empty
--- | Checks if game is over and outputs statement.
-verifyBoard :: Board -> Size -> (Gameover, Output)
-verifyBoard board boardSize = do
+-- | Checks if game is over and outputs end result.
+checkBoard :: Board -> Size -> (Gameover, Output)
+checkBoard board boardSize = do
     let (flag, mark) = checkRow board boardSize
     if flag
         then (True, show mark ++ " won!")
@@ -51,37 +51,37 @@ checkRow board boardSize
 -- | Checks if game is over based on columns.
 checkColumn :: Board -> Size -> (Gameover, Mark)
 checkColumn board boardSize
-    | null board                                                                             = (False, X)
-    | all (== Occupied X) (head board : takeNth (length board `div` boardSize) (tail board)) = (True, X)
-    | all (== Occupied O) (head board : takeNth (length board `div` boardSize) (tail board)) = (True, O)
-    | otherwise                                                                              = checkColumn (dropNth (length board `div` boardSize) (tail board)) boardSize
+    | null board                                                                                  = (False, X)
+    | all (== Occupied X) (head board : takeEveryNth (length board `div` boardSize) (tail board)) = (True, X)
+    | all (== Occupied O) (head board : takeEveryNth (length board `div` boardSize) (tail board)) = (True, O)
+    | otherwise                                                                                   = checkColumn (dropEveryNth (length board `div` boardSize) (tail board)) boardSize
 -- | Checks if game is over based on left diagonal.
 checkDiagonalL :: Board -> Size -> (Gameover, Mark)
 checkDiagonalL board boardSize
-    | null board                                                              = (False, X)
-    | all (== Occupied X) (head board : takeNth (boardSize + 1) (tail board)) = (True, X)
-    | all (== Occupied O) (head board : takeNth (boardSize + 1) (tail board)) = (True, O)
-    | otherwise                                                               = (False, X)
+    | null board                                                                   = (False, X)
+    | all (== Occupied X) (head board : takeEveryNth (boardSize + 1) (tail board)) = (True, X)
+    | all (== Occupied O) (head board : takeEveryNth (boardSize + 1) (tail board)) = (True, O)
+    | otherwise                                                                    = (False, X)
 -- | Checks if game is over based on right diagonal.
 checkDiagonalR :: Board -> Size -> (Gameover, Mark)
 checkDiagonalR board boardSize
-    | null board                                                                                                       = (False, X)
-    | all (== Occupied X) (take boardSize (board !! (boardSize - 1) : takeNth (boardSize - 1) (drop boardSize board))) = (True, X)
-    | all (== Occupied O) (take boardSize (board !! (boardSize - 1) : takeNth (boardSize - 1) (drop boardSize board))) = (True, O)
-    | otherwise                                                                                                        = (False, X)
+    | null board                                                                                                            = (False, X)
+    | all (== Occupied X) (take boardSize (board !! (boardSize - 1) : takeEveryNth (boardSize - 1) (drop boardSize board))) = (True, X)
+    | all (== Occupied O) (take boardSize (board !! (boardSize - 1) : takeEveryNth (boardSize - 1) (drop boardSize board))) = (True, O)
+    | otherwise                                                                                                             = (False, X)
 -- | Takes every Nth element from a list.
 -- Source: https://stackoverflow.com/a/2028218
-takeNth :: Int -> [a] -> [a]
-takeNth n xs 
+takeEveryNth :: Int -> [a] -> [a]
+takeEveryNth n xs 
     | n < 1 = []
     | null xs = []
     | otherwise = case drop (n - 1) xs of
-    y : ys -> y : takeNth n ys
+    y : ys -> y : takeEveryNth n ys
     [] -> []
 -- | Drops every Nth element from a list.
 -- Source: https://stackoverflow.com/a/5290128
-dropNth :: Int -> [a] -> [a]
-dropNth n xs
+dropEveryNth :: Int -> [a] -> [a]
+dropEveryNth n xs
     | n < 1 = xs
     | null xs = []
-    | otherwise = take (n - 1) xs ++ dropNth n (drop n xs)
+    | otherwise = take (n - 1) xs ++ dropEveryNth n (drop n xs)

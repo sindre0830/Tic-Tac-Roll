@@ -1,6 +1,6 @@
-module GameModes
+module UI
     ( 
-    module GameModes
+    menu
     ) where
 -- foreign modules
 import System.Random ( newStdGen )
@@ -8,9 +8,9 @@ import System.IO ( hFlush, stdout )
 -- local modules
 import Dictionary ( Board, Mark(X), Size )
 import Render ( renderFrame )
-import Validation ( verifyMove, verifyBoard )
+import Validation ( verifyMove, checkBoard )
 import AI ( entityAI )
-import Grid ( switchMark, newBoard, getNewBoard )
+import Grid ( switchMark, genBoard, modifyBoard )
 import InputFilter ( filterMenuInput, filterGameInput )
 -- | Get user input and execute valid commands.
 menu :: IO ()
@@ -19,7 +19,7 @@ menu = do
     hFlush stdout
     input <- getLine
     let (cmd, boardSize) = filterMenuInput input
-    let board = newBoard boardSize
+    let board = genBoard boardSize
     if cmd == "-h"
         then do
             -- print all available commands and their description
@@ -30,41 +30,41 @@ menu = do
             putStrLn "\tEvE N\t\t# Computer VS Computer mode with NxN board (N needs to be larger than 1 to be valid, will default to 3 if invalid or not specified)."
             menu
         else if cmd == "pvp"
-            then gameLoopPvP X board boardSize
+            then gamemodePvP X board boardSize
         else if cmd == "pve"
-            then gameLoopPvE X board boardSize
+            then gamemodePvE X board boardSize
         else if cmd == "eve"
-            then gameLoopEvE X board boardSize
+            then gamemodeEvE X board boardSize
         else do
             putStrLn "Unknown command... Try again.\n"
             menu
--- | Player vs Player gameloop.
-gameLoopPvP :: Mark -> Board -> Size -> IO ()
-gameLoopPvP mark board boardSize = do
+-- | Player vs Player gamemode.
+gamemodePvP :: Mark -> Board -> Size -> IO ()
+gamemodePvP mark board boardSize = do
     renderFrame board boardSize ("Player " ++ show mark ++ ": ")
     inpStr <- getLine
     putStrLn ""
     let (pos, dir) = filterGameInput inpStr
     if verifyMove pos board
         then do
-            let newBoard = getNewBoard board boardSize pos mark dir
-            let (gameover, msg) = verifyBoard newBoard boardSize
+            let newBoard = modifyBoard board boardSize pos mark dir
+            let (gameover, msg) = checkBoard newBoard boardSize
             if gameover
                 then renderFrame newBoard boardSize msg
-                else gameLoopPvP (switchMark mark) newBoard boardSize
+                else gamemodePvP (switchMark mark) newBoard boardSize
         else do
             putStrLn "Invalid move, try again..."
-            gameLoopPvP mark board boardSize
--- | Player vs Entity gameloop.
-gameLoopPvE :: Mark -> Board -> Size -> IO ()
-gameLoopPvE mark board boardSize = do
+            gamemodePvP mark board boardSize
+-- | Player vs Entity gamemode.
+gamemodePvE :: Mark -> Board -> Size -> IO ()
+gamemodePvE mark board boardSize = do
     renderFrame board boardSize ("Player " ++ show mark ++ ": ")
     inpStr <- getLine
     let (pos, dir) = filterGameInput inpStr
     if verifyMove pos board
         then do
-            let newBoard = getNewBoard board boardSize pos mark dir
-            let (gameover, msg) = verifyBoard newBoard boardSize
+            let newBoard = modifyBoard board boardSize pos mark dir
+            let (gameover, msg) = checkBoard newBoard boardSize
             if gameover
                 then do
                     putStrLn ""
@@ -75,23 +75,23 @@ gameLoopPvE mark board boardSize = do
                     let (board, entityMove) = entityAI newBoard boardSize (switchMark mark) rndSeed
                     putStrLn ("Player O: " ++ entityMove)
                     putStrLn ""
-                    let (gameover, msg) = verifyBoard board boardSize
+                    let (gameover, msg) = checkBoard board boardSize
                     if gameover
                         then renderFrame board boardSize msg
-                        else gameLoopPvE mark board boardSize
+                        else gamemodePvE mark board boardSize
         else do
             putStrLn "Invalid move, try again..."
-            gameLoopPvE mark board boardSize
--- | Entity vs Entity gameloop.
-gameLoopEvE :: Mark -> Board -> Size -> IO ()
-gameLoopEvE mark board boardSize = do
+            gamemodePvE mark board boardSize
+-- | Entity vs Entity gamemode.
+gamemodeEvE :: Mark -> Board -> Size -> IO ()
+gamemodeEvE mark board boardSize = do
     renderFrame board boardSize ("Player " ++ show mark ++ ": ")
     rndSeed <- newStdGen
     --generate board based on entity move
     let (newBoard, entityMove) = entityAI board boardSize mark rndSeed
     putStr entityMove
     putStrLn "\n"
-    let (gameover, msg) = verifyBoard newBoard boardSize
+    let (gameover, msg) = checkBoard newBoard boardSize
     if gameover
         then renderFrame newBoard boardSize msg
-        else gameLoopEvE (switchMark mark) newBoard boardSize
+        else gamemodeEvE (switchMark mark) newBoard boardSize

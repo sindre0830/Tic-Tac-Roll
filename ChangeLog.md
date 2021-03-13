@@ -104,4 +104,6 @@
 
 [1.31.2] formatting: Added comments where needed and simplified some functions
 
+[1.31.3] formatting: Renamed modules and functions for readability
+
 ## Unreleased changes
