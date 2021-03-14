@@ -118,4 +118,6 @@
 
 [1.34.1] formatting: Added specific data exportation for each module
 
+[1.34.2] formatting: Updated README
+
 ## Unreleased changes
