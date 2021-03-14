@@ -1,6 +1,10 @@
 module Transformation
     ( 
-    module Transformation
+    rotateBoard,
+    swapPieces,
+    listToMatrix,
+    rotateL,
+    rotateR
     ) where
 -- foreign modules
 import Data.List ( transpose )

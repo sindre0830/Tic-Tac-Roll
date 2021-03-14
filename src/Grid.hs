@@ -1,6 +1,10 @@
 module Grid
     ( 
-    module Grid
+    genBoard,
+    switchMark,
+    modifyBoard,
+    updateCell,
+    getBoardSize
     ) where
 -- local modules
 import Dictionary ( Board, Position, Direction, Cell(..), Mark(..), Size )

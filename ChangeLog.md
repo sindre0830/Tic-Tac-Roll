@@ -116,4 +116,6 @@
 
 [1.34.0] development: Added getBoardSize to calculate board size from board (Not in use ATM)
 
+[1.34.1] formatting: Added specific data exportation for each module
+
 ## Unreleased changes

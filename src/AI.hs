@@ -1,6 +1,7 @@
 module AI
     ( 
-    module AI
+    entityAI,
+    removeOccupiedCells
     ) where
 -- foreign modules
 import System.Random ( Random(randomR), StdGen )

@@ -1,6 +1,9 @@
 module Render
     ( 
-    module Render
+    renderFrame,
+    renderBoard,
+    genFancyRow,
+    genFancyLine
     ) where
 -- foreign modules
 import System.IO ( hFlush, stdout )

@@ -1,6 +1,8 @@
 module InputFilter
     ( 
-    module InputFilter
+    filterMenuInput,
+    filterGameInput,
+    stringToLower
     ) where
 -- foreign modules
 import Data.Char ( toLower )
