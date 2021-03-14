@@ -311,27 +311,27 @@ spec_checkDiagonalR = do
 spec_takeColumn :: Spec
 spec_takeColumn = do
     describe "takeColumn tests:" $ do
-        it "takeColumn 0 [] returns []" $ do
-            takeColumn 0 [] `shouldBe` []
-        it "takeColumn 1 [Empty] returns [Empty]" $ do
-            takeColumn 1 [Empty] `shouldBe` [Empty]
-        it "takeColumn 2 [Occupied X, Occupied O, Occupied X, Occupied O] returns [Occupied X, Occupied X]" $ do
-            takeColumn 2 [Occupied X, Occupied O, Occupied X, Occupied O] `shouldBe` [Occupied X, Occupied X]
-        it "takeColumn 3 [Occupied X, Occupied O, Empty, Occupied X, Occupied O, Empty, Occupied X, Occupied O, Empty] returns [Occupied X, Occupied X, Occupied X]" $ do
-            takeColumn 3 [Occupied X, Occupied O, Empty, Occupied X, Occupied O, Empty, Occupied X, Occupied O, Empty] `shouldBe` [Occupied X, Occupied X, Occupied X]
-        it "takeColumn 4 [Occupied X, Occupied O, Empty, Occupied X, Occupied O, Empty, Occupied X, Occupied O, Empty] returns [Occupied X, Occupied O, Empty]" $ do
-            takeColumn 4 [Occupied X, Occupied O, Empty, Occupied X, Occupied O, Empty, Occupied X, Occupied O, Empty] `shouldBe` [Occupied X, Occupied O, Empty]
+        it "takeColumn 0 []                                                                                               returns []" $ do
+            takeColumn 0 []                                                                                               `shouldBe` []
+        it "takeColumn 1 [Empty]                                                                                          returns [Empty]" $ do
+            takeColumn 1 [Empty]                                                                                          `shouldBe` [Empty]
+        it "takeColumn 2 [Occupied X, Empty, Occupied X, Empty]                                                           returns [Occupied X, Occupied X]" $ do
+            takeColumn 2 [Occupied X, Empty, Occupied X, Empty]                                                           `shouldBe` [Occupied X, Occupied X]
+        it "takeColumn 3 [Occupied X, Empty, Empty, Occupied X, Empty, Empty, Occupied X, Empty, Empty]                   returns [Occupied X, Occupied X, Occupied X]" $ do
+            takeColumn 3 [Occupied X, Empty, Empty, Occupied X, Empty, Empty, Occupied X, Empty, Empty]                   `shouldBe` [Occupied X, Occupied X, Occupied X]
+        it "takeColumn 4 [Occupied X, Empty, Empty, Empty, Occupied X, Empty, Empty, Empty, Occupied X]                   returns [Occupied X, Occupied X, Occupied X]" $ do
+            takeColumn 4 [Occupied X, Empty, Empty, Empty, Occupied X, Empty, Empty, Empty, Occupied X]                   `shouldBe` [Occupied X, Occupied X, Occupied X]
         it "take 3 (takeColumn 2 (drop 2 [Empty, Empty, Occupied X, Empty, Occupied X, Empty, Occupied X, Empty, Empty])) returns [Occupied X, Occupied X, Occupied X]" $ do
             take 3 (takeColumn 2 (drop 2 [Empty, Empty, Occupied X, Empty, Occupied X, Empty, Occupied X, Empty, Empty])) `shouldBe` [Occupied X, Occupied X, Occupied X]
 
 spec_dropColumn :: Spec
 spec_dropColumn = do
     describe "dropColumn tests:" $ do
-        it "dropColumn 0 [] returns []" $ do
-            dropColumn 0 [] `shouldBe` []
-        it "dropColumn 1 [Empty] returns []" $ do
-            dropColumn 1 [Empty] `shouldBe` []
-        it "dropColumn 2 [Occupied X, Occupied O, Occupied X, Occupied O] returns [Occupied O, Occupied O]" $ do
-            dropColumn 2 [Occupied X, Occupied O, Occupied X, Occupied O] `shouldBe` [Occupied O, Occupied O]
-        it "dropColumn 3 [Occupied X, Occupied O, Empty, Occupied X, Occupied O, Empty, Occupied X, Occupied O, Empty] returns [Occupied O, Empty, Occupied O, Empty, Occupied O, Empty]" $ do
-            dropColumn 3 [Occupied X, Occupied O, Empty, Occupied X, Occupied O, Empty, Occupied X, Occupied O, Empty] `shouldBe` [Occupied O, Empty, Occupied O, Empty, Occupied O, Empty]
+        it "dropColumn 0 []                                                                                            returns []" $ do
+            dropColumn 0 []                                                                                            `shouldBe` []
+        it "dropColumn 1 [Empty]                                                                                       returns []" $ do
+            dropColumn 1 [Empty]                                                                                       `shouldBe` []
+        it "dropColumn 2 [Empty, Occupied O, Empty, Occupied O]                                                        returns [Occupied O, Occupied O]" $ do
+            dropColumn 2 [Empty, Occupied O, Empty, Occupied O]                                                        `shouldBe` [Occupied O, Occupied O]
+        it "dropColumn 3 [Empty, Occupied O, Occupied X, Empty, Occupied O, Occupied X, Empty, Occupied O, Occupied X] returns [Occupied O, Occupied X, Occupied O, Occupied X, Occupied O, Occupied X]" $ do
+            dropColumn 3 [Empty, Occupied O, Occupied X, Empty, Occupied O, Occupied X, Empty, Occupied O, Occupied X] `shouldBe` [Occupied O, Occupied X, Occupied O, Occupied X, Occupied O, Occupied X]

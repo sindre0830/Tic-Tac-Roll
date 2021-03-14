@@ -112,4 +112,6 @@
 
 [1.32.0] development: Added take- and dropColumn
 
+[1.33.0] testing: Modified test cases for readability
+
 ## Unreleased changes
