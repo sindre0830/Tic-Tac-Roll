@@ -110,4 +110,6 @@
 
 [1.31.5] formatting: Updated README
 
+[1.32.0] development: Added take- and dropColumn
+
 ## Unreleased changes

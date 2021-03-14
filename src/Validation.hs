@@ -51,37 +51,30 @@ checkRow board boardSize
 -- | Checks if game is over based on columns.
 checkColumn :: Board -> Size -> (Gameover, Mark)
 checkColumn board boardSize
-    | null board                                                                                  = (False, X)
-    | all (== Occupied X) (head board : takeEveryNth (length board `div` boardSize) (tail board)) = (True, X)
-    | all (== Occupied O) (head board : takeEveryNth (length board `div` boardSize) (tail board)) = (True, O)
-    | otherwise                                                                                   = checkColumn (dropEveryNth (length board `div` boardSize) (tail board)) boardSize
+    | null board                                       = (False, X)
+    | all (== Occupied X) (takeColumn boardSize board) = (True, X)
+    | all (== Occupied O) (takeColumn boardSize board) = (True, O)
+    | otherwise                                        = checkColumn (dropColumn boardSize board) (boardSize - 1)
 -- | Checks if game is over based on left diagonal.
 checkDiagonalL :: Board -> Size -> (Gameover, Mark)
 checkDiagonalL board boardSize
-    | null board                                                                   = (False, X)
-    | all (== Occupied X) (head board : takeEveryNth (boardSize + 1) (tail board)) = (True, X)
-    | all (== Occupied O) (head board : takeEveryNth (boardSize + 1) (tail board)) = (True, O)
-    | otherwise                                                                    = (False, X)
+    | null board                                             = (False, X)
+    | all (== Occupied X) (takeColumn (boardSize + 1) board) = (True, X)
+    | all (== Occupied O) (takeColumn (boardSize + 1) board) = (True, O)
+    | otherwise                                              = (False, X)
 -- | Checks if game is over based on right diagonal.
 checkDiagonalR :: Board -> Size -> (Gameover, Mark)
 checkDiagonalR board boardSize
-    | null board                                                                                                            = (False, X)
-    | all (== Occupied X) (take boardSize (board !! (boardSize - 1) : takeEveryNth (boardSize - 1) (drop boardSize board))) = (True, X)
-    | all (== Occupied O) (take boardSize (board !! (boardSize - 1) : takeEveryNth (boardSize - 1) (drop boardSize board))) = (True, O)
-    | otherwise                                                                                                             = (False, X)
--- | Takes every Nth element from a list.
--- Source: https://stackoverflow.com/a/2028218
-takeEveryNth :: Int -> [a] -> [a]
-takeEveryNth n xs 
-    | n < 1 = []
-    | null xs = []
-    | otherwise = case drop (n - 1) xs of
-    y : ys -> y : takeEveryNth n ys
-    [] -> []
--- | Drops every Nth element from a list.
--- Source: https://stackoverflow.com/a/5290128
-dropEveryNth :: Int -> [a] -> [a]
-dropEveryNth n xs
-    | n < 1 = xs
-    | null xs = []
-    | otherwise = take (n - 1) xs ++ dropEveryNth n (drop n xs)
+    | null board                                                                                     = (False, X)
+    | all (== Occupied X) (take boardSize (takeColumn (boardSize - 1) (drop (boardSize - 1) board))) = (True, X)
+    | all (== Occupied O) (take boardSize (takeColumn (boardSize - 1) (drop (boardSize - 1) board))) = (True, O)
+    | otherwise                                                                                      = (False, X)
+-- | Takes the first column.
+takeColumn :: Size -> Board -> Board
+takeColumn _ [] = []
+takeColumn n (x:xs) = x : takeColumn n (drop (n - 1) xs)
+
+-- | Drop the first column.
+dropColumn :: Size -> Board -> Board
+dropColumn _ [] = []
+dropColumn n (x:xs) = take (n - 1) xs ++ dropColumn n (drop (n - 1) xs)
