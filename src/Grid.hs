@@ -27,3 +27,7 @@ updateCell xs i e
     | otherwise = case splitAt (i - 1) xs of
         (before, _:after) -> before ++ e : after
         _ -> xs
+-- | Gets board size from board. (NOT IN USE)
+getBoardSize :: Board -> Size
+getBoardSize [] = 0
+getBoardSize xs = floor (sqrt (fromIntegral (length xs)))

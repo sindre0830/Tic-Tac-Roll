@@ -19,6 +19,7 @@ main = do
         spec_switchMark
         spec_modifyBoard
         spec_updateCell
+        spec_getBoardSize
         -- module InputFilter
         spec_filterMenuInput
         spec_filterGameInput
@@ -101,6 +102,18 @@ spec_updateCell = do
             updateCell [Empty, Empty, Empty, Empty] 0 (Occupied X)    `shouldBe` [Empty, Empty, Empty, Empty]
         it "updateCell [Empty, Empty, Empty, Empty] (-2) (Occupied X) returns [Empty, Empty, Empty, Empty]" $ do
             updateCell [Empty, Empty, Empty, Empty] (-2) (Occupied X) `shouldBe` [Empty, Empty, Empty, Empty]
+
+spec_getBoardSize :: Spec
+spec_getBoardSize = do
+    describe "getBoardSize tests:" $ do
+        it "getBoardSize []                                                              returns 0" $ do
+            getBoardSize []                                                              `shouldBe` 0
+        it "getBoardSize [Empty]                                                         returns 1" $ do
+            getBoardSize [Empty]                                                         `shouldBe` 1
+        it "getBoardSize [Empty, Empty, Empty, Empty]                                    returns 2" $ do
+            getBoardSize [Empty, Empty, Empty, Empty]                                    `shouldBe` 2
+        it "getBoardSize [Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty] returns 3" $ do
+            getBoardSize [Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty, Empty] `shouldBe` 3
 
 -- module InputFilter
 

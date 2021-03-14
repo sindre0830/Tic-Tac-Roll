@@ -114,4 +114,6 @@
 
 [1.33.0] testing: Modified test cases for readability
 
+[1.34.0] development: Added getBoardSize to calculate board size from board (Not in use ATM)
+
 ## Unreleased changes
