@@ -1,4 +1,4 @@
-# [Assignment 1 - tic tac roll](https://git.gvk.idi.ntnu.no/course/prog2006/prog2006-2021/-/wikis/Tasks/Assignment-1:-tic-tac-roll)
+# Assignment 1
 
 ### Information
 
@@ -33,7 +33,7 @@ To exit the program you can press ```ctrl-c``` at any time.
 
 During the early parts of development, I used this [solution](https://dev.to/nt591/writing-a-tictactoe-game-in-haskell-545e) to print a fancy board but found the rest of his code to be very hardcoded. I decided early on that I wanted a dynamic board size and the possibility for it to be user-defined.
 
-In the early parts of development, I went with a position-specific board check, this meant that it would only check the relevant row, column, and/or diagonal for winners. This was very fun to implement, but as soon as I started to work on the swapping corners feature I decided it would be easier to check the entire board and had to rewrite my implementation. If you would like to check my previous solution you can click [here](https://git.gvk.idi.ntnu.no/course/prog2006/as/sindre0830/assignment-one/-/blob/dc9686c9a53d282467adc8d35cb80eee19187042/src/Lib.hs#L67).
+In the early parts of development, I went with a position-specific board check, this meant that it would only check the relevant row, column, and/or diagonal for winners. This was very fun to implement, but as soon as I started to work on the swapping corners feature I decided it would be easier to check the entire board and had to rewrite my implementation. If you would like to check my previous solution you can click [here](https://github.com/sindre0830/Tic-Tac-Roll/blob/dc9686c9a53d282467adc8d35cb80eee19187042/src/Lib.hs).
 
 I had some trouble with ```sqrt``` function in Haskell, so I had to send board size as a parameter to each function needing it. I have since managed to create a function to get it from the board length itself (getBoardSize), but I didn't have time to implement it in my program. Have a look at that function to see where my next code improvement would be.
 
